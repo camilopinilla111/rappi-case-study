@@ -1,12 +1,12 @@
 import initSqlJs, { type Database } from 'sql.js'
 import sqlWasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
 
-import { ProductSchema } from './ProductSchema'
+import { Schema } from './Schema'
 
 export class SqlJsDatabaseConnection {
   private databasePromise: Promise<Database> | null = null
 
-  constructor(private readonly schema: ProductSchema) {}
+  constructor(private readonly schema: Schema) {}
 
   getDatabase(): Promise<Database> {
     this.databasePromise ??= this.createDatabase().catch((error: unknown) => {

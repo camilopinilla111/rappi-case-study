@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { productCatalog, type Product } from './db/products'
+import { dataService, type Product } from './db/products'
 
 function App() {
   const [products, setProducts] = useState<Product[]>([])
@@ -15,7 +15,7 @@ function App() {
         setStatus('loading')
         setErrorMessage(null)
 
-        const nextProducts = await productCatalog.loadProducts()
+        const nextProducts = await dataService.loadProducts()
 
         if (!isActive) {
           return

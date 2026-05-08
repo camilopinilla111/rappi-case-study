@@ -1,24 +1,18 @@
-import type { ProductCatalog } from './ProductCatalog'
-import { ProductCatalogService } from './ProductCatalogService'
-import type { ProductRepository } from './ProductRepository'
+import type { DataService } from './DataService'
+import { MainDataService } from './MainDataService'
 import { ProductRowMapper } from './ProductRowMapper'
-import { ProductSchema } from './ProductSchema'
-import { ProductSeeder } from './ProductSeeder'
-import { SAMPLE_PRODUCTS } from './SampleProducts'
+import type { Repository } from './Repository'
+import { Schema } from './Schema'
 import { SqlJsDatabaseConnection } from './SqlJsDatabaseConnection'
-import { SqlJsProductRepository } from './SqlJsProductRepository'
+import { SqlJsProductsRepository } from './SqlJsProductsRepository'
 
 export type { Product } from './Product'
 
-const productSeeder = new ProductSeeder(SAMPLE_PRODUCTS)
-const productSchema = new ProductSchema(productSeeder)
-const databaseConnection = new SqlJsDatabaseConnection(productSchema)
+const databaseConnection = new SqlJsDatabaseConnection(new Schema())
 
-const productRepository: ProductRepository = new SqlJsProductRepository(
+const productRepository: Repository = new SqlJsProductsRepository(
   databaseConnection,
   new ProductRowMapper(),
 )
 
-export const productCatalog: ProductCatalog = new ProductCatalogService(
-  productRepository,
-)
+export const dataService: DataService = new MainDataService(productRepository)

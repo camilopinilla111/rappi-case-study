@@ -1,5 +1,5 @@
 import type { Product } from './Product'
 
-export interface ProductCatalog {
+export interface DataService {
   loadProducts(): Promise<Product[]>
 }
