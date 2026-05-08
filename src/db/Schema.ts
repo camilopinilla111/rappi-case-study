@@ -3,9 +3,9 @@ import type { Database, SqlValue } from 'sql.js'
 import { SAMPLE_PRODUCTS } from './SampleProducts'
 
 const SAMPLE_COUNTRIES: SqlValue[][] = [
-  ['co'],
-  ['mx'],
-  ['br'],
+  ['79f8c4c0-1fe0-4c8d-8f7d-4d9a934c9f31', 'co'],
+  ['8bf7b8ea-6f67-4b6f-9f62-423cf59e671a', 'mx'],
+  ['4484e4f7-7c05-48cc-aac4-e9ec1b8e9a83', 'br'],
 ]
 
 const SAMPLE_CITIES: SqlValue[][] = [
@@ -31,7 +31,8 @@ export class Schema {
   private readonly createStatements = [
     `
       CREATE TABLE IF NOT EXISTS country (
-        id TEXT PRIMARY KEY CHECK (id IN ('co', 'mx', 'br'))
+        id TEXT PRIMARY KEY,
+        code TEXT NOT NULL UNIQUE CHECK (code IN ('co', 'mx', 'br'))
       );
     `,
     `
@@ -61,7 +62,7 @@ export class Schema {
   private readonly seedTables = [
     {
       name: 'country',
-      insertStatement: 'INSERT INTO country (id) VALUES (?)',
+      insertStatement: 'INSERT INTO country (id, code) VALUES (?, ?)',
       rows: SAMPLE_COUNTRIES,
     },
     {
