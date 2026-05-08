@@ -18,13 +18,60 @@ const SAMPLE_CITIES: SqlValue[][] = [
   ['e8b75c6f-6460-4e32-a286-4571196810c6', 'São Paulo', SAMPLE_COUNTRIES[2][0]],
 ]
 
+const SAMPLE_ZONE_TYPES: SqlValue[][] = [
+  ['9911d5b0-3581-4f6e-b953-4ab10ee8cc2a', 'wealthy'],
+  ['2ac4a1b4-55f4-459c-8419-21ef8d9d9c86', 'non_wealthy'],
+]
+
+const SAMPLE_ZONE_PRIORIZATIONS: SqlValue[][] = [
+  ['cba768ac-e5f7-4a23-8b91-db35d8b062cf', 'high_priority'],
+  ['289cbd71-7d19-418c-8d96-8f70416451ed', 'prioritized'],
+  ['96a0fb3a-b674-4329-99f2-92a706c8cfea', 'not_prioritized'],
+]
+
 const SAMPLE_ZONES: SqlValue[][] = [
-  ['ecf81681-dfd1-4f52-964c-d4aa927e4eaf', 'Chapinero', SAMPLE_CITIES[0][0]],
-  ['caea135b-e4db-45e7-93d7-13a488e97604', 'Usaquén', SAMPLE_CITIES[0][0]],
-  ['a5517934-3c2e-47d9-8f7f-483e1023309b', 'Roma Norte', SAMPLE_CITIES[1][0]],
-  ['5463f0ea-4f76-4080-aeb8-031399682340', 'Polanco', SAMPLE_CITIES[1][0]],
-  ['f24477cd-cd84-442a-9c1f-ffce61eb9ac8', 'Pinheiros', SAMPLE_CITIES[2][0]],
-  ['3de3f7f2-a220-42c5-a63e-8ddb56b51aa3', 'Vila Mariana', SAMPLE_CITIES[2][0]],
+  [
+    'ecf81681-dfd1-4f52-964c-d4aa927e4eaf',
+    'Chapinero',
+    SAMPLE_CITIES[0][0],
+    SAMPLE_ZONE_TYPES[0][0],
+    SAMPLE_ZONE_PRIORIZATIONS[0][0],
+  ],
+  [
+    'caea135b-e4db-45e7-93d7-13a488e97604',
+    'Usaquén',
+    SAMPLE_CITIES[0][0],
+    SAMPLE_ZONE_TYPES[0][0],
+    SAMPLE_ZONE_PRIORIZATIONS[1][0],
+  ],
+  [
+    'a5517934-3c2e-47d9-8f7f-483e1023309b',
+    'Roma Norte',
+    SAMPLE_CITIES[1][0],
+    SAMPLE_ZONE_TYPES[0][0],
+    SAMPLE_ZONE_PRIORIZATIONS[0][0],
+  ],
+  [
+    '5463f0ea-4f76-4080-aeb8-031399682340',
+    'Polanco',
+    SAMPLE_CITIES[1][0],
+    SAMPLE_ZONE_TYPES[0][0],
+    SAMPLE_ZONE_PRIORIZATIONS[1][0],
+  ],
+  [
+    'f24477cd-cd84-442a-9c1f-ffce61eb9ac8',
+    'Pinheiros',
+    SAMPLE_CITIES[2][0],
+    SAMPLE_ZONE_TYPES[0][0],
+    SAMPLE_ZONE_PRIORIZATIONS[0][0],
+  ],
+  [
+    '3de3f7f2-a220-42c5-a63e-8ddb56b51aa3',
+    'Vila Mariana',
+    SAMPLE_CITIES[2][0],
+    SAMPLE_ZONE_TYPES[1][0],
+    SAMPLE_ZONE_PRIORIZATIONS[2][0],
+  ],
 ]
 
 export class Schema {
@@ -44,11 +91,29 @@ export class Schema {
       );
     `,
     `
+      CREATE TABLE IF NOT EXISTS zone_type (
+        id TEXT PRIMARY KEY,
+        code TEXT NOT NULL UNIQUE CHECK (code IN ('wealthy', 'non_wealthy'))
+      );
+    `,
+    `
+      CREATE TABLE IF NOT EXISTS zone_priorization (
+        id TEXT PRIMARY KEY,
+        code TEXT NOT NULL UNIQUE CHECK (
+          code IN ('high_priority', 'prioritized', 'not_prioritized')
+        )
+      );
+    `,
+    `
       CREATE TABLE IF NOT EXISTS zone (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         city_id TEXT NOT NULL,
-        FOREIGN KEY (city_id) REFERENCES city(id)
+        type_id TEXT NOT NULL,
+        priorization_id TEXT NOT NULL,
+        FOREIGN KEY (city_id) REFERENCES city(id),
+        FOREIGN KEY (type_id) REFERENCES zone_type(id),
+        FOREIGN KEY (priorization_id) REFERENCES zone_priorization(id)
       );
     `,
     `
@@ -71,8 +136,19 @@ export class Schema {
       rows: SAMPLE_CITIES,
     },
     {
+      name: 'zone_type',
+      insertStatement: 'INSERT INTO zone_type (id, code) VALUES (?, ?)',
+      rows: SAMPLE_ZONE_TYPES,
+    },
+    {
+      name: 'zone_priorization',
+      insertStatement: 'INSERT INTO zone_priorization (id, code) VALUES (?, ?)',
+      rows: SAMPLE_ZONE_PRIORIZATIONS,
+    },
+    {
       name: 'zone',
-      insertStatement: 'INSERT INTO zone (id, name, city_id) VALUES (?, ?, ?)',
+      insertStatement:
+        'INSERT INTO zone (id, name, city_id, type_id, priorization_id) VALUES (?, ?, ?, ?, ?)',
       rows: SAMPLE_ZONES,
     },
     {
