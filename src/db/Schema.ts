@@ -18,6 +18,15 @@ const SAMPLE_CITIES: SqlValue[][] = [
   ['e8b75c6f-6460-4e32-a286-4571196810c6', 'São Paulo', SAMPLE_COUNTRIES[2][0]],
 ]
 
+const SAMPLE_ZONES: SqlValue[][] = [
+  ['ecf81681-dfd1-4f52-964c-d4aa927e4eaf', 'Chapinero', SAMPLE_CITIES[0][0]],
+  ['caea135b-e4db-45e7-93d7-13a488e97604', 'Usaquén', SAMPLE_CITIES[0][0]],
+  ['a5517934-3c2e-47d9-8f7f-483e1023309b', 'Roma Norte', SAMPLE_CITIES[1][0]],
+  ['5463f0ea-4f76-4080-aeb8-031399682340', 'Polanco', SAMPLE_CITIES[1][0]],
+  ['f24477cd-cd84-442a-9c1f-ffce61eb9ac8', 'Pinheiros', SAMPLE_CITIES[2][0]],
+  ['3de3f7f2-a220-42c5-a63e-8ddb56b51aa3', 'Vila Mariana', SAMPLE_CITIES[2][0]],
+]
+
 export class Schema {
   private readonly createStatements = [
     `
@@ -32,6 +41,14 @@ export class Schema {
         name TEXT NOT NULL,
         country_id TEXT NOT NULL,
         FOREIGN KEY (country_id) REFERENCES country(id)
+      );
+    `,
+    `
+      CREATE TABLE IF NOT EXISTS zone (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        city_id TEXT NOT NULL,
+        FOREIGN KEY (city_id) REFERENCES city(id)
       );
     `,
     `
@@ -52,6 +69,11 @@ export class Schema {
       name: 'city',
       insertStatement: 'INSERT INTO city (id, name, country_id) VALUES (?, ?, ?)',
       rows: SAMPLE_CITIES,
+    },
+    {
+      name: 'zone',
+      insertStatement: 'INSERT INTO zone (id, name, city_id) VALUES (?, ?, ?)',
+      rows: SAMPLE_ZONES,
     },
     {
       name: 'product',
