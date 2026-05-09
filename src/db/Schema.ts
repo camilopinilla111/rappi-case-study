@@ -121,6 +121,13 @@ const SAMPLE_METRICS = [
   },
 ]
 
+const SAMPLE_COMPANIES = [
+  {
+    id: crypto.randomUUID(),
+    name: 'company_1',
+  },
+]
+
 const SAMPLE_METRIC_MEASUREMENTS = SAMPLE_ZONES.flatMap((zone, zoneIndex) =>
   SAMPLE_METRICS.flatMap((metric, metricIndex) =>
     [2, 1, 0].map((weeksAgo) => {
@@ -130,6 +137,7 @@ const SAMPLE_METRIC_MEASUREMENTS = SAMPLE_ZONES.flatMap((zone, zoneIndex) =>
         weeksAgo,
         zoneId: zone.id,
         metricId: metric.id,
+        companyId: SAMPLE_COMPANIES[0].id,
       }
     }),
   ),
@@ -186,14 +194,22 @@ export class Schema {
       );
     `,
     `
+      CREATE TABLE IF NOT EXISTS company (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE
+      );
+    `,
+    `
       CREATE TABLE IF NOT EXISTS metric_measurement (
         id TEXT PRIMARY KEY,
         value NUMERIC NOT NULL,
         weeks_ago INTEGER NOT NULL,
         zone_id TEXT NOT NULL,
         metric_id TEXT NOT NULL,
+        company_id TEXT NOT NULL,
         FOREIGN KEY (zone_id) REFERENCES zone(id),
-        FOREIGN KEY (metric_id) REFERENCES metric(id)
+        FOREIGN KEY (metric_id) REFERENCES metric(id),
+        FOREIGN KEY (company_id) REFERENCES company(id)
       );
     `,
     `
@@ -246,15 +262,21 @@ export class Schema {
       rows: SAMPLE_METRICS.map((metric) => [metric.id, metric.name]),
     },
     {
+      name: 'company',
+      insertStatement: 'INSERT INTO company (id, name) VALUES (?, ?)',
+      rows: SAMPLE_COMPANIES.map((company) => [company.id, company.name]),
+    },
+    {
       name: 'metric_measurement',
       insertStatement:
-        'INSERT INTO metric_measurement (id, value, weeks_ago, zone_id, metric_id) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO metric_measurement (id, value, weeks_ago, zone_id, metric_id, company_id) VALUES (?, ?, ?, ?, ?, ?)',
       rows: SAMPLE_METRIC_MEASUREMENTS.map((metricMeasurement) => [
         metricMeasurement.id,
         metricMeasurement.value,
         metricMeasurement.weeksAgo,
         metricMeasurement.zoneId,
         metricMeasurement.metricId,
+        metricMeasurement.companyId,
       ]),
     },
     {
