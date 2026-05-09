@@ -126,19 +126,26 @@ const SAMPLE_COMPANIES = [
     id: crypto.randomUUID(),
     name: 'company_1',
   },
+  {
+    id: crypto.randomUUID(),
+    name: 'company_2',
+  },
 ]
 
 const SAMPLE_METRIC_MEASUREMENTS = SAMPLE_ZONES.flatMap((zone, zoneIndex) =>
   SAMPLE_METRICS.flatMap((metric, metricIndex) =>
-    [2, 1, 0].map((weeksAgo) => {
-      return {
+    [2, 1, 0].flatMap((weeksAgo) => {
+      const baseValue =
+        (zoneIndex + 1) * 10 + (metricIndex + 1) + (2 - weeksAgo) * 0.5
+
+      return SAMPLE_COMPANIES.map((company, companyIndex) => ({
         id: crypto.randomUUID(),
-        value: (zoneIndex + 1) * 10 + (metricIndex + 1) + (2 - weeksAgo) * 0.5,
+        value: baseValue * (companyIndex + 1),
         weeksAgo,
         zoneId: zone.id,
         metricId: metric.id,
-        companyId: SAMPLE_COMPANIES[0].id,
-      }
+        companyId: company.id,
+      }))
     }),
   ),
 )
