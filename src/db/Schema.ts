@@ -44,6 +44,10 @@ const SAMPLE_ZONE_TYPES = [
     id: '2ac4a1b4-55f4-459c-8419-21ef8d9d9c86',
     code: 'non_wealthy',
   },
+  {
+    id: '7e92dd3f-5341-49aa-854a-c97f6b8de67f',
+    code: 'mixed',
+  },
 ]
 
 const SAMPLE_ZONE_PRIORIZATIONS = [
@@ -125,7 +129,9 @@ export class Schema {
     `
       CREATE TABLE IF NOT EXISTS zone_type (
         id TEXT PRIMARY KEY,
-        code TEXT NOT NULL UNIQUE CHECK (code IN ('wealthy', 'non_wealthy'))
+        code TEXT NOT NULL UNIQUE CHECK (
+          code IN ('wealthy', 'non_wealthy', 'mixed')
+        )
       );
     `,
     `
