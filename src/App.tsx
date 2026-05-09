@@ -1,7 +1,5 @@
-import { Products } from './components/Products'
-
 function App() {
-  return <Products />
+  return null
 }
 
 export default App

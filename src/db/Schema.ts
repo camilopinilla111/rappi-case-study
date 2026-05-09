@@ -1,7 +1,5 @@
 import type { Database, SqlValue } from 'sql.js'
 
-import { SAMPLE_PRODUCTS } from './SampleProducts'
-
 const SAMPLE_COUNTRIES = [
   {
     id: crypto.randomUUID(),
@@ -219,13 +217,6 @@ export class Schema {
         FOREIGN KEY (company_id) REFERENCES company(id)
       );
     `,
-    `
-      CREATE TABLE IF NOT EXISTS product (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        price NUMERIC NOT NULL
-      );
-    `,
   ]
   private readonly seedTables = [
     {
@@ -284,15 +275,6 @@ export class Schema {
         metricMeasurement.zoneId,
         metricMeasurement.metricId,
         metricMeasurement.companyId,
-      ]),
-    },
-    {
-      name: 'product',
-      insertStatement: 'INSERT INTO product (id, name, price) VALUES (?, ?, ?)',
-      rows: SAMPLE_PRODUCTS.map((product) => [
-        product.id,
-        product.name,
-        product.price,
       ]),
     },
   ]

@@ -1,5 +1,9 @@
-import type { Product } from './Product'
-
 export interface DataService {
-  loadProducts(): Promise<Product[]>
+  test(): Promise<void>
+}
+
+export class MainDataService implements DataService {
+  test(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
