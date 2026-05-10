@@ -1,18 +1,18 @@
 export type Id = string
 
-export interface Measurement {
+export type Measurement = {
   id: Id
   value: number
   weeksAgo: number
 }
 
-export interface Zone {
+export type Zone = {
   id: Id
   average: number
   measurements: Measurement[]
 }
 
-export interface MetricsProviderMeasurement extends Measurement {
+export type MetricsProviderMeasurement = Measurement & {
   zoneId: Id
 }
 
