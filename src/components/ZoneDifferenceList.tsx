@@ -2,13 +2,19 @@ import type { Zone } from '../data/MetricAnalyzer'
 
 type ZoneDifferenceListProps = {
   zones: Zone[]
+  referenceCompanyName: string
+  comparisonCompanyName: string
 }
 
 const differenceFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
 
-export function ZoneDifferenceList({ zones }: ZoneDifferenceListProps) {
+export function ZoneDifferenceList({
+  zones,
+  referenceCompanyName,
+  comparisonCompanyName,
+}: ZoneDifferenceListProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full text-left text-sm">
@@ -21,10 +27,10 @@ export function ZoneDifferenceList({ zones }: ZoneDifferenceListProps) {
               Diferencia
             </th>
             <th scope="col" className="px-4 py-3 text-right">
-              Compañía de comparación
+              {comparisonCompanyName}
             </th>
             <th scope="col" className="py-3 pl-4 text-right">
-              Compañía de referencia
+              {referenceCompanyName}
             </th>
           </tr>
         </thead>

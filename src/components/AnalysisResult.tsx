@@ -5,9 +5,16 @@ import { ZoneDifferenceList } from './ZoneDifferenceList'
 type AnalysisResultProps = {
   result: MetricAnalysisResponse | null
   error: string | null
+  referenceCompanyName: string
+  comparisonCompanyName: string
 }
 
-export function AnalysisResult({ result, error }: AnalysisResultProps) {
+export function AnalysisResult({
+  result,
+  error,
+  referenceCompanyName,
+  comparisonCompanyName,
+}: AnalysisResultProps) {
   if (error) {
     return (
       <section className="rounded-lg border border-red-200 bg-red-50 p-5 text-sm text-red-800">
@@ -35,7 +42,11 @@ export function AnalysisResult({ result, error }: AnalysisResultProps) {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <ComparisonTitle comparisonType={result.comparisonType} />
       <div className="mt-4">
-        <ZoneDifferenceList zones={result.zones} />
+        <ZoneDifferenceList
+          zones={result.zones}
+          referenceCompanyName={referenceCompanyName}
+          comparisonCompanyName={comparisonCompanyName}
+        />
       </div>
     </section>
   )

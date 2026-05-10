@@ -154,6 +154,10 @@ export function AnalyticsScreen({
   ])
 
   const isFormDisabled = isLoading || Boolean(loadError)
+  const referenceCompanyName =
+    companies.find((company) => company.id === referenceCompanyId)?.name ?? ''
+  const comparisonCompanyName =
+    companies.find((company) => company.id === comparisonCompanyId)?.name ?? ''
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
@@ -191,7 +195,12 @@ export function AnalyticsScreen({
             Analizando...
           </section>
         ) : (
-          <AnalysisResult result={result} error={analysisError} />
+          <AnalysisResult
+            result={result}
+            error={analysisError}
+            referenceCompanyName={referenceCompanyName}
+            comparisonCompanyName={comparisonCompanyName}
+          />
         )}
       </div>
     </main>
