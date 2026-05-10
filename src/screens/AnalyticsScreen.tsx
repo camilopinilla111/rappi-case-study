@@ -63,6 +63,22 @@ export function AnalyticsScreen({
     }
   }, [dataService])
 
+  const handleReferenceCompanyChange = (value: string) => {
+    if (value === comparisonCompanyId) {
+      setComparisonCompanyId(referenceCompanyId)
+    }
+
+    setReferenceCompanyId(value)
+  }
+
+  const handleComparisonCompanyChange = (value: string) => {
+    if (value === referenceCompanyId) {
+      setReferenceCompanyId(comparisonCompanyId)
+    }
+
+    setComparisonCompanyId(value)
+  }
+
   const handleSubmit = async () => {
     if (!referenceCompanyId || !comparisonCompanyId || !metricId) {
       return
@@ -110,8 +126,8 @@ export function AnalyticsScreen({
             metricId={metricId}
             isSubmitting={isSubmitting}
             isDisabled={isFormDisabled}
-            onReferenceCompanyChange={setReferenceCompanyId}
-            onComparisonCompanyChange={setComparisonCompanyId}
+            onReferenceCompanyChange={handleReferenceCompanyChange}
+            onComparisonCompanyChange={handleComparisonCompanyChange}
             onMetricChange={setMetricId}
             onSubmit={handleSubmit}
           />
