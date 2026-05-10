@@ -16,8 +16,8 @@ export function ZoneDifferenceList({
   comparisonCompanyName,
 }: ZoneDifferenceListProps) {
   return (
-    <div className="max-w-full overflow-x-auto">
-      <table className="w-max min-w-[40rem] text-left text-sm">
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-left text-sm">
         <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
           <tr>
             <th scope="col" className="py-2.5 pl-4 pr-3">

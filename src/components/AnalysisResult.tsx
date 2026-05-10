@@ -37,7 +37,7 @@ export function AnalysisResult({
   }
 
   return (
-    <section className="w-fit max-w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div>
         <ZoneDifferenceList
           zones={result.zones}
