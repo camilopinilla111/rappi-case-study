@@ -1,0 +1,128 @@
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
+
+import type { Measurement, Zone } from '../data/MetricAnalyzer'
+
+type ZoneTrendChartProps = {
+  zone: Zone
+  referenceCompanyName: string
+  comparisonCompanyName: string
+}
+
+type ChartPoint = {
+  weeksAgo: number
+  label: string
+  referenceValue: number | null
+  comparisonValue: number | null
+}
+
+const weeksAgoLabels = [8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+const valueFormatter = new Intl.NumberFormat('en-US', {
+  maximumFractionDigits: 2,
+})
+
+function getMeasurementValueByWeek(
+  measurements: Measurement[],
+): Map<number, number> {
+  return new Map(
+    measurements.map((measurement) => [
+      measurement.weeksAgo,
+      measurement.value,
+    ]),
+  )
+}
+
+function mapChartData(zone: Zone): ChartPoint[] {
+  const referenceMeasurements = getMeasurementValueByWeek(
+    zone.referenceData.measurements,
+  )
+  const comparisonMeasurements = getMeasurementValueByWeek(
+    zone.comparisonData.measurements,
+  )
+
+  return weeksAgoLabels.map((weeksAgo) => ({
+    weeksAgo,
+    label: `${weeksAgo} weeks ago`,
+    referenceValue: referenceMeasurements.get(weeksAgo) ?? null,
+    comparisonValue: comparisonMeasurements.get(weeksAgo) ?? null,
+  }))
+}
+
+export function ZoneTrendChart({
+  zone,
+  referenceCompanyName,
+  comparisonCompanyName,
+}: ZoneTrendChartProps) {
+  const chartData = mapChartData(zone)
+
+  return (
+    <section className="flex h-full min-h-[26rem] flex-col gap-4 p-4">
+      <div className="min-w-0">
+        <h2 className="truncate text-base font-semibold text-slate-950">
+          {zone.name}
+        </h2>
+        <p className="text-sm text-slate-500">Tendencia por semanas</p>
+      </div>
+
+      <div className="min-h-0 flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ top: 8, right: 80, bottom: 56, left: 8 }}
+          >
+            <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" />
+            <XAxis
+              dataKey="label"
+              interval={0}
+              minTickGap={0}
+              angle={-35}
+              textAnchor="end"
+              tick={{ fill: '#64748b', fontSize: 12 }}
+              tickLine={false}
+              padding={{ left: 28, right: 72 }}
+              height={72}
+            />
+            <YAxis
+              tick={{ fill: '#64748b', fontSize: 12 }}
+              tickFormatter={(value) => valueFormatter.format(Number(value))}
+              tickLine={false}
+              width={48}
+            />
+            <Tooltip
+              formatter={(value) => valueFormatter.format(Number(value))}
+              labelStyle={{ color: '#0f172a' }}
+            />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Line
+              type="monotone"
+              dataKey="referenceValue"
+              name={referenceCompanyName}
+              stroke="#2563eb"
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="comparisonValue"
+              name={comparisonCompanyName}
+              stroke="#f97316"
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </section>
+  )
+}

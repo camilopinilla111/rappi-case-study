@@ -1,9 +1,13 @@
+import type { KeyboardEvent } from 'react'
+
 import type { Zone } from '../data/MetricAnalyzer'
 
 type ZoneDifferenceListProps = {
   zones: Zone[]
   referenceCompanyName: string
   comparisonCompanyName: string
+  selectedZoneId: string | null
+  onZoneSelect: (zoneId: string) => void
 }
 
 const differenceFormatter = new Intl.NumberFormat('en-US', {
@@ -14,9 +18,21 @@ export function ZoneDifferenceList({
   zones,
   referenceCompanyName,
   comparisonCompanyName,
+  selectedZoneId,
+  onZoneSelect,
 }: ZoneDifferenceListProps) {
+  const handleRowKeyDown = (
+    event: KeyboardEvent<HTMLTableRowElement>,
+    zoneId: string,
+  ) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onZoneSelect(zoneId)
+    }
+  }
+
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto lg:h-full">
       <table className="min-w-full text-left text-sm">
         <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
           <tr>
@@ -38,9 +54,20 @@ export function ZoneDifferenceList({
           {zones.map((zone) => {
             const differencePrefix =
               zone.comparisonData.value >= zone.referenceData.value ? '+' : '-'
+            const isSelected = zone.id === selectedZoneId
 
             return (
-              <tr key={zone.id}>
+              <tr
+                key={zone.id}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                onClick={() => onZoneSelect(zone.id)}
+                onKeyDown={(event) => handleRowKeyDown(event, zone.id)}
+                className={`cursor-pointer outline-none transition hover:bg-orange-50 focus:bg-orange-50 focus:ring-2 focus:ring-inset focus:ring-[#ff441f]/30 ${
+                  isSelected ? 'bg-orange-50' : 'bg-white'
+                }`}
+              >
                 <td className="py-2.5 pl-4 pr-3 font-medium text-slate-800">
                   {zone.name}
                 </td>
