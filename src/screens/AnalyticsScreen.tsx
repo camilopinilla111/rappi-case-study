@@ -162,12 +162,6 @@ export function AnalyticsScreen({
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-6">
-        <header>
-          <h1 className="text-2xl font-semibold tracking-normal text-slate-950">
-            Análisis de métricas
-          </h1>
-        </header>
-
         {loadError ? (
           <section className="rounded-lg border border-red-200 bg-red-50 p-5 text-sm text-red-800">
             {loadError}

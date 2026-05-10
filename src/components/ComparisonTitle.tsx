@@ -10,6 +10,10 @@ const comparisonLabels: Record<ComparisonType, string> = {
 }
 
 export function ComparisonTitle({ comparisonType }: ComparisonTitleProps) {
+  if (comparisonType === 'lower_than_reference') {
+    return null
+  }
+
   return (
     <h2 className="text-xl font-semibold text-slate-950">
       {comparisonLabels[comparisonType]}
