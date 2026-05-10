@@ -5,7 +5,7 @@ type ZoneDifferenceListProps = {
   zones: Zone[]
 }
 
-const differenceFormatter = new Intl.NumberFormat('es-CO', {
+const differenceFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
 
