@@ -1,15 +1,15 @@
 import initSqlJs, { type Database } from 'sql.js'
 import sqlWasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
 
-import type { SamplesSeeder } from './SamplesSeeder'
 import { Schema } from './Schema'
+import type { StandardInputRowsSeeder } from './StandardInputRowsSeeder'
 
 export class SqlJsDatabaseConnection {
   private databasePromise: Promise<Database> | null = null
 
   constructor(
     private readonly schema: Schema,
-    private readonly samplesSeeder: SamplesSeeder,
+    private readonly standardInputRowsSeeder: StandardInputRowsSeeder,
   ) {}
 
   getDatabase(): Promise<Database> {
@@ -28,7 +28,7 @@ export class SqlJsDatabaseConnection {
     const database = new sql.Database()
 
     this.schema.initialize(database)
-    this.samplesSeeder.seed(database)
+    this.standardInputRowsSeeder.seed(database)
 
     return database
   }
