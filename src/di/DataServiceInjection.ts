@@ -7,10 +7,21 @@ import { MetricsProvider } from '../data/MetricsProvider'
 import { SqlMetricsProviderRepo } from '../data/MetricsProviderRepo'
 import { Schema } from '../db/Schema'
 import { SqlJsDatabaseConnection } from '../db/SqlJsDatabaseConnection'
+import { TsvParserStandardInputRowsProvider } from '../db/StandardInputRowsProvider'
 import { StandardInputRowsSeeder } from '../db/StandardInputRowsSeeder'
+import { TsvFileReader } from '../db/TsvFileReader'
+import { PapaParseTsvParser } from '../utils/TsvParser'
 
 const schema = new Schema()
-const standardInputRowsSeeder = new StandardInputRowsSeeder([])
+const tsvFileReader = new TsvFileReader()
+const tsvParser = new PapaParseTsvParser()
+const standardInputRowsProvider = new TsvParserStandardInputRowsProvider(
+  tsvFileReader.read('rows'),
+  tsvParser,
+)
+const standardInputRowsSeeder = new StandardInputRowsSeeder([
+  standardInputRowsProvider,
+])
 const databaseConnection = new SqlJsDatabaseConnection(
   schema,
   standardInputRowsSeeder,
