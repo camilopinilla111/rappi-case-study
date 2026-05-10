@@ -6,11 +6,15 @@ import type { DataService } from '../data/DataService'
 import type { Response as MetricAnalysisResponse } from '../data/MetricAnalyzer'
 import type { Metric } from '../data/MetricRepo'
 import { AnalysisResult } from '../components/AnalysisResult'
-import { MetricAnalysisForm } from '../components/MetricAnalysisForm'
+import { MetricAnalysisFormV2 } from '../components/MetricAnalysisFormV2'
 
 type AnalyticsScreenProps = {
   dataService?: DataService
 }
+
+const DEFAULT_REFERENCE_COMPANY_NAME = 'DiDi Food'
+const DEFAULT_COMPARISON_COMPANY_NAME = 'Uber Eats'
+const DEFAULT_METRIC_NAME = 'Avg Delivery Time (mins)'
 
 export function AnalyticsScreen({
   dataService = defaultDataService,
@@ -42,9 +46,27 @@ export function AnalyticsScreen({
 
         setCompanies(loadedCompanies)
         setMetrics(loadedMetrics)
-        setReferenceCompanyId(loadedCompanies[0]?.id ?? '')
-        setComparisonCompanyId(loadedCompanies[1]?.id ?? loadedCompanies[0]?.id ?? '')
-        setMetricId(loadedMetrics[0]?.id ?? '')
+        setReferenceCompanyId(
+          loadedCompanies.find(
+            (company) => company.name === DEFAULT_REFERENCE_COMPANY_NAME,
+          )?.id ??
+            loadedCompanies[0]?.id ??
+            '',
+        )
+        setComparisonCompanyId(
+          loadedCompanies.find(
+            (company) => company.name === DEFAULT_COMPARISON_COMPANY_NAME,
+          )?.id ??
+            loadedCompanies[1]?.id ??
+            loadedCompanies[0]?.id ??
+            '',
+        )
+        setMetricId(
+          loadedMetrics.find((metric) => metric.name === DEFAULT_METRIC_NAME)
+            ?.id ??
+            loadedMetrics[0]?.id ??
+            '',
+        )
       } catch {
         if (isActive) {
           setLoadError('No fue posible cargar las compañías y métricas.')
@@ -63,57 +85,98 @@ export function AnalyticsScreen({
     }
   }, [dataService])
 
-  const handleSubmit = async () => {
-    if (!referenceCompanyId || !comparisonCompanyId || !metricId) {
+  const handleReferenceCompanyChange = (value: string) => {
+    if (value === comparisonCompanyId) {
+      setComparisonCompanyId(referenceCompanyId)
+    }
+
+    setReferenceCompanyId(value)
+  }
+
+  const handleComparisonCompanyChange = (value: string) => {
+    if (value === referenceCompanyId) {
+      setReferenceCompanyId(comparisonCompanyId)
+    }
+
+    setComparisonCompanyId(value)
+  }
+
+  useEffect(() => {
+    if (
+      isLoading ||
+      loadError ||
+      !referenceCompanyId ||
+      !comparisonCompanyId ||
+      !metricId
+    ) {
       return
+    }
+
+    let isActive = true
+
+    async function analyzeMetric() {
+      try {
+        const analysis = await dataService.analyzeMetric(
+          referenceCompanyId,
+          comparisonCompanyId,
+          metricId,
+        )
+
+        if (isActive) {
+          setResult(analysis)
+        }
+      } catch {
+        if (isActive) {
+          setAnalysisError('No fue posible analizar la métrica seleccionada.')
+        }
+      } finally {
+        if (isActive) {
+          setIsSubmitting(false)
+        }
+      }
     }
 
     setIsSubmitting(true)
     setAnalysisError(null)
     setResult(null)
+    analyzeMetric()
 
-    try {
-      const analysis = await dataService.analyzeMetric(
-        referenceCompanyId,
-        comparisonCompanyId,
-        metricId,
-      )
-      setResult(analysis)
-    } catch {
-      setAnalysisError('No fue posible analizar la métrica seleccionada.')
-    } finally {
-      setIsSubmitting(false)
+    return () => {
+      isActive = false
     }
-  }
+  }, [
+    comparisonCompanyId,
+    dataService,
+    isLoading,
+    loadError,
+    metricId,
+    referenceCompanyId,
+  ])
 
-  const isFormDisabled = isLoading || isSubmitting || Boolean(loadError)
+  const isFormDisabled = isLoading || Boolean(loadError)
+  const referenceCompanyName =
+    companies.find((company) => company.id === referenceCompanyId)?.name ?? ''
+  const comparisonCompanyName =
+    companies.find((company) => company.id === comparisonCompanyId)?.name ?? ''
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6">
-        <header>
-          <h1 className="text-2xl font-semibold tracking-normal text-slate-950">
-            Análisis de métricas
-          </h1>
-        </header>
-
+    <main className="min-h-screen bg-slate-50 px-2 py-2 text-slate-950 sm:px-3 sm:py-3">
+      <div className="flex w-full flex-col gap-2 sm:gap-3">
         {loadError ? (
           <section className="rounded-lg border border-red-200 bg-red-50 p-5 text-sm text-red-800">
             {loadError}
           </section>
         ) : (
-          <MetricAnalysisForm
+          <MetricAnalysisFormV2
             companies={companies}
             metrics={metrics}
             referenceCompanyId={referenceCompanyId}
             comparisonCompanyId={comparisonCompanyId}
             metricId={metricId}
-            isSubmitting={isSubmitting}
             isDisabled={isFormDisabled}
-            onReferenceCompanyChange={setReferenceCompanyId}
-            onComparisonCompanyChange={setComparisonCompanyId}
+            onReferenceCompanyChange={handleReferenceCompanyChange}
+            onComparisonCompanyChange={handleComparisonCompanyChange}
             onMetricChange={setMetricId}
-            onSubmit={handleSubmit}
           />
         )}
 
@@ -121,8 +184,17 @@ export function AnalyticsScreen({
           <section className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm">
             Cargando compañías y métricas...
           </section>
+        ) : isSubmitting ? (
+          <section className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm">
+            Analizando...
+          </section>
         ) : (
-          <AnalysisResult result={result} error={analysisError} />
+          <AnalysisResult
+            result={result}
+            error={analysisError}
+            referenceCompanyName={referenceCompanyName}
+            comparisonCompanyName={comparisonCompanyName}
+          />
         )}
       </div>
     </main>
