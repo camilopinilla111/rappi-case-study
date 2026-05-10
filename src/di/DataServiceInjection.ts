@@ -5,6 +5,9 @@ import { SqlMetricAnalyzerRepo } from '../data/MetricAnalyzerRepo'
 import { SqlMetricRepo } from '../data/MetricRepo'
 import { MetricsProvider } from '../data/MetricsProvider'
 import { SqlMetricsProviderRepo } from '../data/MetricsProviderRepo'
+import { TsvParserAdvantagesInputRowsProvider } from '../db/AdvantagesInputRowsProvider'
+import { AdvantagesInputRowsSeeder } from '../db/AdvantagesInputRowsSeeder'
+import { RappiCompanySeeder } from '../db/RappiCompanySeeder'
 import { Schema } from '../db/Schema'
 import { SqlJsDatabaseConnection } from '../db/SqlJsDatabaseConnection'
 import { TsvParserStandardInputRowsProvider } from '../db/StandardInputRowsProvider'
@@ -22,9 +25,19 @@ const standardInputRowsProvider = new TsvParserStandardInputRowsProvider(
 const standardInputRowsSeeder = new StandardInputRowsSeeder([
   standardInputRowsProvider,
 ])
+const advantagesInputRowsProvider = new TsvParserAdvantagesInputRowsProvider(
+  tsvFileReader.read('advantages'),
+  tsvParser,
+)
+const advantagesInputRowsSeeder = new AdvantagesInputRowsSeeder([
+  advantagesInputRowsProvider,
+])
+const rappiCompanySeeder = new RappiCompanySeeder()
 const databaseConnection = new SqlJsDatabaseConnection(
   schema,
+  rappiCompanySeeder,
   standardInputRowsSeeder,
+  advantagesInputRowsSeeder,
 )
 
 const metricsProviderRepo = new SqlMetricsProviderRepo(databaseConnection)
