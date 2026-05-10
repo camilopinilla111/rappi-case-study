@@ -5,7 +5,7 @@ import type { Metric } from '../data/MetricRepo'
 import { SelectField } from '../widgets/SelectField'
 import { SubmitButton } from '../widgets/SubmitButton'
 
-type MetricAnalysisFormProps = {
+type MetricAnalysisFormV1Props = {
   companies: Company[]
   metrics: Metric[]
   referenceCompanyId: string
@@ -19,7 +19,7 @@ type MetricAnalysisFormProps = {
   onSubmit: () => void
 }
 
-export function MetricAnalysisForm({
+export function MetricAnalysisFormV1({
   companies,
   metrics,
   referenceCompanyId,
@@ -31,7 +31,7 @@ export function MetricAnalysisForm({
   onComparisonCompanyChange,
   onMetricChange,
   onSubmit,
-}: MetricAnalysisFormProps) {
+}: MetricAnalysisFormV1Props) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     onSubmit()
