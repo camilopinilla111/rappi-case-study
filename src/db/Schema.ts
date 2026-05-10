@@ -166,7 +166,9 @@ export class Schema {
     `
       CREATE TABLE IF NOT EXISTS country (
         id TEXT PRIMARY KEY,
-        code TEXT NOT NULL UNIQUE CHECK (code IN ('co', 'mx', 'br'))
+        code TEXT NOT NULL UNIQUE CHECK (
+          code IN ('ec', 'pe', 'cl', 'uy', 'cr', 'co', 'ar', 'mx', 'br')
+        )
       );
     `,
     `

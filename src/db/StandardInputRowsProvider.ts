@@ -2,7 +2,9 @@ import { z } from 'zod'
 
 import type { TsvParser } from '../utils/TsvParser'
 
-export type CountryCode = 'co' | 'mx' | 'br'
+const countryCodes = ['ec', 'pe', 'cl', 'uy', 'cr', 'co', 'ar', 'mx', 'br'] as const
+
+export type CountryCode = (typeof countryCodes)[number]
 export type ZoneType = 'wealthy' | 'mixed' | 'non_wealthy'
 export type ZonePriorization =
   | 'prioritized'
@@ -53,7 +55,7 @@ const tsvRowSchema = z.object({
 
 type TsvRow = z.infer<typeof tsvRowSchema>
 
-const countryCodes = new Set<CountryCode>(['co', 'mx', 'br'])
+const countryCodeSet = new Set<string>(countryCodes)
 
 const zoneTypeByTsvValue = {
   Wealthy: 'wealthy',
@@ -166,9 +168,9 @@ export class TsvParserStandardInputRowsProvider
     const country = this.getRequiredString(value, 'country', rowNumber)
       .toLowerCase()
 
-    if (!countryCodes.has(country as CountryCode)) {
+    if (!countryCodeSet.has(country)) {
       throw new Error(
-        `Invalid TSV row ${rowNumber}: country must be co, mx, or br.`,
+        `Invalid TSV row ${rowNumber}: country must be ${countryCodes.join(', ')}.`,
       )
     }
 
