@@ -6,7 +6,7 @@ import type { DataService } from '../data/DataService'
 import type { Response as MetricAnalysisResponse } from '../data/MetricAnalyzer'
 import type { Metric } from '../data/MetricRepo'
 import { AnalysisResult } from '../components/AnalysisResult'
-import { MetricAnalysisFormV1 } from '../components/MetricAnalysisFormV1'
+import { MetricAnalysisFormV2 } from '../components/MetricAnalysisFormV2'
 
 type AnalyticsScreenProps = {
   dataService?: DataService
@@ -102,7 +102,7 @@ export function AnalyticsScreen({
             {loadError}
           </section>
         ) : (
-          <MetricAnalysisFormV1
+          <MetricAnalysisFormV2
             companies={companies}
             metrics={metrics}
             referenceCompanyId={referenceCompanyId}
