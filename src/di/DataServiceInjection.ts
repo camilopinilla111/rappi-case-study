@@ -5,11 +5,13 @@ import { SqlMetricAnalyzerRepo } from '../data/MetricAnalyzerRepo'
 import { SqlMetricRepo } from '../data/MetricRepo'
 import { MetricsProvider } from '../data/MetricsProvider'
 import { SqlMetricsProviderRepo } from '../data/MetricsProviderRepo'
+import { SamplesSeeder } from '../db/SamplesSeeder'
 import { Schema } from '../db/Schema'
 import { SqlJsDatabaseConnection } from '../db/SqlJsDatabaseConnection'
 
 const schema = new Schema()
-const databaseConnection = new SqlJsDatabaseConnection(schema)
+const samplesSeeder = new SamplesSeeder()
+const databaseConnection = new SqlJsDatabaseConnection(schema, samplesSeeder)
 
 const metricsProviderRepo = new SqlMetricsProviderRepo(databaseConnection)
 const metricsProvider = new MetricsProvider(metricsProviderRepo)
