@@ -23,6 +23,7 @@ type InlineSelectProps = {
   ariaLabel: string
   value: string
   disabled: boolean
+  selectedLabel: string
   children: ReactNode
   onChange: (value: string) => void
 }
@@ -45,20 +46,35 @@ function InlineSelect({
   ariaLabel,
   value,
   disabled,
+  selectedLabel,
   children,
   onChange,
 }: InlineSelectProps) {
+  const widthLabel = selectedLabel || ariaLabel
+
   return (
-    <select
-      id={id}
-      aria-label={ariaLabel}
-      value={value}
-      disabled={disabled}
-      onChange={(event) => onChange(event.target.value)}
-      className="min-h-11 min-w-0 max-w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base font-semibold text-slate-950 shadow-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
-    >
-      {children}
-    </select>
+    <span className="relative inline-block min-w-0 max-w-full align-middle">
+      <span
+        aria-hidden="true"
+        className="block min-h-11 max-w-full overflow-hidden whitespace-pre rounded-md border border-transparent px-3 py-2 pr-9 text-base font-semibold"
+      >
+        {widthLabel}
+      </span>
+      <select
+        id={id}
+        aria-label={ariaLabel}
+        value={value}
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.value)}
+        className="absolute inset-0 h-full w-full appearance-none truncate rounded-md border border-slate-300 bg-white px-3 py-2 pr-9 text-base font-semibold text-slate-950 shadow-sm outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
+      >
+        {children}
+      </select>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute right-3 top-1/2 h-0 w-0 -translate-y-1/2 border-x-[4px] border-t-[5px] border-x-transparent border-t-slate-500"
+      />
+    </span>
   )
 }
 
@@ -80,6 +96,14 @@ export function MetricAnalysisFormV2({
     onSubmit()
   }
 
+  const referenceCompanyName =
+    companies.find((company) => company.id === referenceCompanyId)?.name ?? ''
+  const comparisonCompanyName =
+    companies.find((company) => company.id === comparisonCompanyId)?.name ?? ''
+  const metricName =
+    metrics.find((metric) => metric.id === metricId)?.name ?? ''
+  const metricDisplayName = metricDisplayNames[metricName] ?? metricName
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -92,6 +116,7 @@ export function MetricAnalysisFormV2({
           ariaLabel="Compañía de comparación"
           value={comparisonCompanyId}
           disabled={isDisabled}
+          selectedLabel={comparisonCompanyName}
           onChange={onComparisonCompanyChange}
         >
           {companies.map((company) => (
@@ -106,6 +131,7 @@ export function MetricAnalysisFormV2({
           ariaLabel="Compañía de referencia"
           value={referenceCompanyId}
           disabled={isDisabled}
+          selectedLabel={referenceCompanyName}
           onChange={onReferenceCompanyChange}
         >
           {companies.map((company) => (
@@ -121,6 +147,7 @@ export function MetricAnalysisFormV2({
             ariaLabel="Métrica"
             value={metricId}
             disabled={isDisabled}
+            selectedLabel={metricDisplayName}
             onChange={onMetricChange}
           >
             {metrics.map((metric) => (
