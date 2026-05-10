@@ -1,6 +1,7 @@
 import initSqlJs, { type Database } from 'sql.js'
 import sqlWasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
 
+import type { AdvantagesInputRowsSeeder } from './AdvantagesInputRowsSeeder'
 import type { RappiCompanySeeder } from './RappiCompanySeeder'
 import { Schema } from './Schema'
 import type { StandardInputRowsSeeder } from './StandardInputRowsSeeder'
@@ -12,6 +13,7 @@ export class SqlJsDatabaseConnection {
     private readonly schema: Schema,
     private readonly rappiCompanySeeder: RappiCompanySeeder,
     private readonly standardInputRowsSeeder: StandardInputRowsSeeder,
+    private readonly advantagesInputRowsSeeder: AdvantagesInputRowsSeeder,
   ) {}
 
   getDatabase(): Promise<Database> {
@@ -32,6 +34,7 @@ export class SqlJsDatabaseConnection {
     this.schema.initialize(database)
     this.rappiCompanySeeder.seed(database)
     this.standardInputRowsSeeder.seed(database)
+    this.advantagesInputRowsSeeder.seed(database)
 
     return database
   }
