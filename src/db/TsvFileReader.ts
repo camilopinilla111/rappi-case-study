@@ -1,4 +1,4 @@
-import rowsContent from '../data/rows.tsv?raw'
+import rowsContent from '../data/raw/rows.tsv?raw'
 
 const tsvContentByFileName = {
   rows: rowsContent,
