@@ -1,5 +1,4 @@
 import type { Response as MetricAnalysisResponse } from '../data/MetricAnalyzer'
-import { ComparisonTitle } from './ComparisonTitle'
 import { ZoneDifferenceList } from './ZoneDifferenceList'
 
 type AnalysisResultProps = {
@@ -30,8 +29,7 @@ export function AnalysisResult({
   if (result.zones.length === 0) {
     return (
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <ComparisonTitle comparisonType={result.comparisonType} />
-        <p className="mt-3 text-sm text-slate-600">
+        <p className="text-sm text-slate-600">
           No hay zonas con diferencia para esta comparación.
         </p>
       </section>
@@ -39,9 +37,8 @@ export function AnalysisResult({
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <ComparisonTitle comparisonType={result.comparisonType} />
-      <div className="mt-4">
+    <section className="w-fit max-w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+      <div>
         <ZoneDifferenceList
           zones={result.zones}
           referenceCompanyName={referenceCompanyName}

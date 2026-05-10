@@ -16,20 +16,20 @@ export function ZoneDifferenceList({
   comparisonCompanyName,
 }: ZoneDifferenceListProps) {
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-left text-sm">
+    <div className="max-w-full overflow-x-auto">
+      <table className="w-max min-w-[40rem] text-left text-sm">
         <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
           <tr>
-            <th scope="col" className="py-3 pr-4">
+            <th scope="col" className="py-2.5 pl-4 pr-3">
               Zona
             </th>
-            <th scope="col" className="px-4 py-3 text-right">
+            <th scope="col" className="px-3 py-2.5 text-right">
               Diferencia
             </th>
-            <th scope="col" className="px-4 py-3 text-right">
+            <th scope="col" className="px-3 py-2.5 text-right">
               {comparisonCompanyName}
             </th>
-            <th scope="col" className="py-3 pl-4 text-right">
+            <th scope="col" className="py-2.5 pl-3 pr-4 text-right">
               {referenceCompanyName}
             </th>
           </tr>
@@ -41,17 +41,17 @@ export function ZoneDifferenceList({
 
             return (
               <tr key={zone.id}>
-                <td className="py-3 pr-4 font-medium text-slate-800">
+                <td className="py-2.5 pl-4 pr-3 font-medium text-slate-800">
                   {zone.name}
                 </td>
-                <td className="px-4 py-3 text-right font-semibold text-slate-950">
+                <td className="px-3 py-2.5 text-right font-semibold text-slate-950">
                   {differencePrefix}
                   {differenceFormatter.format(zone.difference)}
                 </td>
-                <td className="px-4 py-3 text-right text-slate-700">
+                <td className="px-3 py-2.5 text-right text-slate-700">
                   {differenceFormatter.format(zone.comparisonData.value)}
                 </td>
-                <td className="py-3 pl-4 text-right text-slate-700">
+                <td className="py-2.5 pl-3 pr-4 text-right text-slate-700">
                   {differenceFormatter.format(zone.referenceData.value)}
                 </td>
               </tr>
