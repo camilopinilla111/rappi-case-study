@@ -79,30 +79,59 @@ export function AnalyticsScreen({
     setComparisonCompanyId(value)
   }
 
-  const handleSubmit = async () => {
-    if (!referenceCompanyId || !comparisonCompanyId || !metricId) {
+  useEffect(() => {
+    if (
+      isLoading ||
+      loadError ||
+      !referenceCompanyId ||
+      !comparisonCompanyId ||
+      !metricId
+    ) {
       return
+    }
+
+    let isActive = true
+
+    async function analyzeMetric() {
+      try {
+        const analysis = await dataService.analyzeMetric(
+          referenceCompanyId,
+          comparisonCompanyId,
+          metricId,
+        )
+
+        if (isActive) {
+          setResult(analysis)
+        }
+      } catch {
+        if (isActive) {
+          setAnalysisError('No fue posible analizar la métrica seleccionada.')
+        }
+      } finally {
+        if (isActive) {
+          setIsSubmitting(false)
+        }
+      }
     }
 
     setIsSubmitting(true)
     setAnalysisError(null)
     setResult(null)
+    analyzeMetric()
 
-    try {
-      const analysis = await dataService.analyzeMetric(
-        referenceCompanyId,
-        comparisonCompanyId,
-        metricId,
-      )
-      setResult(analysis)
-    } catch {
-      setAnalysisError('No fue posible analizar la métrica seleccionada.')
-    } finally {
-      setIsSubmitting(false)
+    return () => {
+      isActive = false
     }
-  }
+  }, [
+    comparisonCompanyId,
+    dataService,
+    isLoading,
+    loadError,
+    metricId,
+    referenceCompanyId,
+  ])
 
-  const isFormDisabled = isLoading || isSubmitting || Boolean(loadError)
+  const isFormDisabled = isLoading || Boolean(loadError)
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
@@ -124,18 +153,20 @@ export function AnalyticsScreen({
             referenceCompanyId={referenceCompanyId}
             comparisonCompanyId={comparisonCompanyId}
             metricId={metricId}
-            isSubmitting={isSubmitting}
             isDisabled={isFormDisabled}
             onReferenceCompanyChange={handleReferenceCompanyChange}
             onComparisonCompanyChange={handleComparisonCompanyChange}
             onMetricChange={setMetricId}
-            onSubmit={handleSubmit}
           />
         )}
 
         {isLoading ? (
           <section className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm">
             Cargando compañías y métricas...
+          </section>
+        ) : isSubmitting ? (
+          <section className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm">
+            Analizando...
           </section>
         ) : (
           <AnalysisResult result={result} error={analysisError} />

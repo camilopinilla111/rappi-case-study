@@ -1,8 +1,7 @@
-import type { FormEvent, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import type { Company } from '../data/CompanyRepo'
 import type { Metric } from '../data/MetricRepo'
-import { SubmitButton } from '../widgets/SubmitButton'
 
 type MetricAnalysisFormV2Props = {
   companies: Company[]
@@ -10,12 +9,10 @@ type MetricAnalysisFormV2Props = {
   referenceCompanyId: string
   comparisonCompanyId: string
   metricId: string
-  isSubmitting: boolean
   isDisabled: boolean
   onReferenceCompanyChange: (value: string) => void
   onComparisonCompanyChange: (value: string) => void
   onMetricChange: (value: string) => void
-  onSubmit: () => void
 }
 
 type InlineSelectProps = {
@@ -80,18 +77,11 @@ export function MetricAnalysisFormV2({
   referenceCompanyId,
   comparisonCompanyId,
   metricId,
-  isSubmitting,
   isDisabled,
   onReferenceCompanyChange,
   onComparisonCompanyChange,
   onMetricChange,
-  onSubmit,
 }: MetricAnalysisFormV2Props) {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    onSubmit()
-  }
-
   const referenceCompanyName =
     companies.find((company) => company.id === referenceCompanyId)?.name ?? ''
   const comparisonCompanyName =
@@ -101,10 +91,7 @@ export function MetricAnalysisFormV2({
   const metricDisplayName = metricDisplayNames[metricName] ?? metricName
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full min-w-0 flex-col gap-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-    >
+    <div className="flex w-full min-w-0 flex-col gap-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-3 text-lg font-medium leading-[2.75rem] text-slate-950">
         <span>¿En cuáles zonas tiene</span>
         <InlineSelect
@@ -155,15 +142,6 @@ export function MetricAnalysisFormV2({
           <span>?</span>
         </span>
       </div>
-
-      <div className="self-start xl:self-end">
-        <SubmitButton
-          isSubmitting={isSubmitting}
-          disabled={
-            isDisabled || !referenceCompanyId || !comparisonCompanyId || !metricId
-          }
-        />
-      </div>
-    </form>
+    </div>
   )
 }
