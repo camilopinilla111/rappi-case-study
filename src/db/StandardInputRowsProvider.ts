@@ -19,15 +19,15 @@ export type StandardInputRow = {
   zoneType: ZoneType
   zonePriorization: ZonePriorization
   metric: string
-  weeks_ago_0_measurement: number | null
-  weeks_ago_1_measurement: number | null
-  weeks_ago_2_measurement: number | null
-  weeks_ago_3_measurement: number | null
-  weeks_ago_4_measurement: number | null
-  weeks_ago_5_measurement: number | null
-  weeks_ago_6_measurement: number | null
-  weeks_ago_7_measurement: number | null
-  weeks_ago_8_measurement: number | null
+  weeksAgo0Measurement: number | null
+  weeksAgo1Measurement: number | null
+  weeksAgo2Measurement: number | null
+  weeksAgo3Measurement: number | null
+  weeksAgo4Measurement: number | null
+  weeksAgo5Measurement: number | null
+  weeksAgo6Measurement: number | null
+  weeksAgo7Measurement: number | null
+  weeksAgo8Measurement: number | null
 }
 
 export interface StandardInputRowsProvider {
@@ -102,47 +102,47 @@ export class TsvParserStandardInputRowsProvider
         rowNumber,
       ),
       metric: this.getRequiredString(row.metric, 'metric', rowNumber),
-      weeks_ago_0_measurement: this.mapMeasurement(
+      weeksAgo0Measurement: this.mapMeasurement(
         row.l0w_roll,
         'l0w_roll',
         rowNumber,
       ),
-      weeks_ago_1_measurement: this.mapMeasurement(
+      weeksAgo1Measurement: this.mapMeasurement(
         row.l1w_roll,
         'l1w_roll',
         rowNumber,
       ),
-      weeks_ago_2_measurement: this.mapMeasurement(
+      weeksAgo2Measurement: this.mapMeasurement(
         row.l2w_roll,
         'l2w_roll',
         rowNumber,
       ),
-      weeks_ago_3_measurement: this.mapMeasurement(
+      weeksAgo3Measurement: this.mapMeasurement(
         row.l3w_roll,
         'l3w_roll',
         rowNumber,
       ),
-      weeks_ago_4_measurement: this.mapMeasurement(
+      weeksAgo4Measurement: this.mapMeasurement(
         row.l4w_roll,
         'l4w_roll',
         rowNumber,
       ),
-      weeks_ago_5_measurement: this.mapMeasurement(
+      weeksAgo5Measurement: this.mapMeasurement(
         row.l5w_roll,
         'l5w_roll',
         rowNumber,
       ),
-      weeks_ago_6_measurement: this.mapMeasurement(
+      weeksAgo6Measurement: this.mapMeasurement(
         row.l6w_roll,
         'l6w_roll',
         rowNumber,
       ),
-      weeks_ago_7_measurement: this.mapMeasurement(
+      weeksAgo7Measurement: this.mapMeasurement(
         row.l7w_roll,
         'l7w_roll',
         rowNumber,
       ),
-      weeks_ago_8_measurement: this.mapMeasurement(
+      weeksAgo8Measurement: this.mapMeasurement(
         row.l8w_roll,
         'l8w_roll',
         rowNumber,
