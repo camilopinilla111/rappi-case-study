@@ -1,7 +1,5 @@
 import type { Database, SqlValue } from 'sql.js'
 
-import { SAMPLE_PRODUCTS } from './SampleProducts'
-
 const SAMPLE_COUNTRIES = [
   {
     id: crypto.randomUUID(),
@@ -110,14 +108,27 @@ const SAMPLE_ZONES = [
   },
 ]
 
+const SAMPLE_METRIC_TYPES = [
+  {
+    id: crypto.randomUUID(),
+    code: 'higher_is_better',
+  },
+  {
+    id: crypto.randomUUID(),
+    code: 'lower_is_better',
+  },
+]
+
 const SAMPLE_METRICS = [
   {
     id: crypto.randomUUID(),
     name: 'metrica_1',
+    typeId: SAMPLE_METRIC_TYPES[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'metrica_2',
+    typeId: SAMPLE_METRIC_TYPES[1].id,
   },
 ]
 
@@ -195,9 +206,19 @@ export class Schema {
       );
     `,
     `
+      CREATE TABLE IF NOT EXISTS metric_type (
+        id TEXT PRIMARY KEY,
+        code TEXT NOT NULL UNIQUE CHECK (
+          code IN ('higher_is_better', 'lower_is_better')
+        )
+      );
+    `,
+    `
       CREATE TABLE IF NOT EXISTS metric (
         id TEXT PRIMARY KEY,
-        name TEXT NOT NULL UNIQUE
+        name TEXT NOT NULL UNIQUE,
+        type_id TEXT NOT NULL,
+        FOREIGN KEY (type_id) REFERENCES metric_type(id)
       );
     `,
     `
@@ -217,13 +238,6 @@ export class Schema {
         FOREIGN KEY (zone_id) REFERENCES zone(id),
         FOREIGN KEY (metric_id) REFERENCES metric(id),
         FOREIGN KEY (company_id) REFERENCES company(id)
-      );
-    `,
-    `
-      CREATE TABLE IF NOT EXISTS product (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        price NUMERIC NOT NULL
       );
     `,
   ]
@@ -264,9 +278,21 @@ export class Schema {
       ]),
     },
     {
+      name: 'metric_type',
+      insertStatement: 'INSERT INTO metric_type (id, code) VALUES (?, ?)',
+      rows: SAMPLE_METRIC_TYPES.map((metricType) => [
+        metricType.id,
+        metricType.code,
+      ]),
+    },
+    {
       name: 'metric',
-      insertStatement: 'INSERT INTO metric (id, name) VALUES (?, ?)',
-      rows: SAMPLE_METRICS.map((metric) => [metric.id, metric.name]),
+      insertStatement: 'INSERT INTO metric (id, name, type_id) VALUES (?, ?, ?)',
+      rows: SAMPLE_METRICS.map((metric) => [
+        metric.id,
+        metric.name,
+        metric.typeId,
+      ]),
     },
     {
       name: 'company',
@@ -284,15 +310,6 @@ export class Schema {
         metricMeasurement.zoneId,
         metricMeasurement.metricId,
         metricMeasurement.companyId,
-      ]),
-    },
-    {
-      name: 'product',
-      insertStatement: 'INSERT INTO product (id, name, price) VALUES (?, ?, ?)',
-      rows: SAMPLE_PRODUCTS.map((product) => [
-        product.id,
-        product.name,
-        product.price,
       ]),
     },
   ]
