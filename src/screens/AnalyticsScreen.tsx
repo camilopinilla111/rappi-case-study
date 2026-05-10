@@ -12,6 +12,10 @@ type AnalyticsScreenProps = {
   dataService?: DataService
 }
 
+const DEFAULT_REFERENCE_COMPANY_NAME = 'Rappi'
+const DEFAULT_COMPARISON_COMPANY_NAME = 'Uber Eats'
+const DEFAULT_METRIC_NAME = 'Avg Delivery Time (mins)'
+
 export function AnalyticsScreen({
   dataService = defaultDataService,
 }: AnalyticsScreenProps) {
@@ -42,9 +46,27 @@ export function AnalyticsScreen({
 
         setCompanies(loadedCompanies)
         setMetrics(loadedMetrics)
-        setReferenceCompanyId(loadedCompanies[0]?.id ?? '')
-        setComparisonCompanyId(loadedCompanies[1]?.id ?? loadedCompanies[0]?.id ?? '')
-        setMetricId(loadedMetrics[0]?.id ?? '')
+        setReferenceCompanyId(
+          loadedCompanies.find(
+            (company) => company.name === DEFAULT_REFERENCE_COMPANY_NAME,
+          )?.id ??
+            loadedCompanies[0]?.id ??
+            '',
+        )
+        setComparisonCompanyId(
+          loadedCompanies.find(
+            (company) => company.name === DEFAULT_COMPARISON_COMPANY_NAME,
+          )?.id ??
+            loadedCompanies[1]?.id ??
+            loadedCompanies[0]?.id ??
+            '',
+        )
+        setMetricId(
+          loadedMetrics.find((metric) => metric.name === DEFAULT_METRIC_NAME)
+            ?.id ??
+            loadedMetrics[0]?.id ??
+            '',
+        )
       } catch {
         if (isActive) {
           setLoadError('No fue posible cargar las compañías y métricas.')
