@@ -23,7 +23,7 @@ export interface MetricsProviderRepo {
   ): Promise<MetricsProviderMeasurement[]>
 }
 
-const MAX_MEASUREMENTS_PER_ZONE = 8
+const MAX_MEASUREMENTS_PER_ZONE = 9
 
 export class MetricsProvider {
   constructor(private readonly repo: MetricsProviderRepo) {}

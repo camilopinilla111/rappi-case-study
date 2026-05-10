@@ -35,7 +35,7 @@ export class SqlMetricsProviderRepo implements MetricsProviderRepo {
           FROM metric_measurement
           WHERE company_id = ? AND metric_id = ?
         )
-        WHERE measurement_rank <= 8
+        WHERE measurement_rank <= 9
         ORDER BY zone_id ASC, weeks_ago DESC, id ASC
       `,
       [companyId, metricId],
