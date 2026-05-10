@@ -3,6 +3,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -102,6 +103,16 @@ export function ZoneTrendChart({
               labelStyle={{ color: '#0f172a' }}
             />
             <Legend wrapperStyle={{ fontSize: 12 }} />
+            <ReferenceLine
+              y={zone.referenceData.value}
+              stroke="#2563eb"
+              strokeDasharray="4 4"
+            />
+            <ReferenceLine
+              y={zone.comparisonData.value}
+              stroke="#f97316"
+              strokeDasharray="4 4"
+            />
             <Line
               type="monotone"
               dataKey="referenceValue"
