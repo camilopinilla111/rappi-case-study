@@ -161,7 +161,7 @@ export function AnalyticsScreen({
 
   return (
     <main className="min-h-screen bg-slate-50 px-2 py-2 text-slate-950 sm:px-3 sm:py-3">
-      <div className="flex w-full flex-col gap-6">
+      <div className="flex w-full flex-col gap-2 sm:gap-3">
         {loadError ? (
           <section className="rounded-lg border border-red-200 bg-red-50 p-5 text-sm text-red-800">
             {loadError}
