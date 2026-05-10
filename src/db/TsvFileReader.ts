@@ -1,5 +1,5 @@
-export class TsvFileProvider {
-  async getTsvFile(fileName: string): Promise<string> {
+export class TsvFileReader {
+  async read(fileName: string): Promise<string> {
     const response = await fetch(`/data/${fileName}.tsv`)
 
     if (response.status === 404) {
