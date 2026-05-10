@@ -117,15 +117,15 @@ export class StandardInputRowsSeeder {
     }
 
     const typeId = this.getOrCreateZoneType(database, row.zoneType)
-    const priorizationId = this.getOrCreateZonePriorization(
+    const prioritizationId = this.getOrCreateZonePrioritization(
       database,
-      row.zonePriorization,
+      row.zonePrioritization,
     )
     const id = crypto.randomUUID()
 
     database.run(
-      'INSERT INTO zone (id, name, city_id, type_id, priorization_id) VALUES (?, ?, ?, ?, ?)',
-      [id, row.zone, cityId, typeId, priorizationId],
+      'INSERT INTO zone (id, name, city_id, type_id, prioritization_id) VALUES (?, ?, ?, ?, ?)',
+      [id, row.zone, cityId, typeId, prioritizationId],
     )
 
     return id
@@ -148,13 +148,13 @@ export class StandardInputRowsSeeder {
     return id
   }
 
-  private getOrCreateZonePriorization(
+  private getOrCreateZonePrioritization(
     database: Database,
     code: string,
   ): string {
     const existingId = this.getFirstId(
       database,
-      'SELECT id FROM zone_priorization WHERE code = ? LIMIT 1',
+      'SELECT id FROM zone_prioritization WHERE code = ? LIMIT 1',
       [code],
     )
 
@@ -163,7 +163,7 @@ export class StandardInputRowsSeeder {
     }
 
     const id = crypto.randomUUID()
-    database.run('INSERT INTO zone_priorization (id, code) VALUES (?, ?)', [
+    database.run('INSERT INTO zone_prioritization (id, code) VALUES (?, ?)', [
       id,
       code,
     ])

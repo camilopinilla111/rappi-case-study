@@ -48,7 +48,7 @@ const SAMPLE_ZONE_TYPES = [
   },
 ]
 
-const SAMPLE_ZONE_PRIORIZATIONS = [
+const SAMPLE_ZONE_PRIORITIZATIONS = [
   {
     id: crypto.randomUUID(),
     code: 'high_priority',
@@ -69,42 +69,42 @@ const SAMPLE_ZONES = [
     name: 'Chapinero',
     cityId: SAMPLE_CITIES[0].id,
     typeId: SAMPLE_ZONE_TYPES[0].id,
-    priorizationId: SAMPLE_ZONE_PRIORIZATIONS[0].id,
+    prioritizationId: SAMPLE_ZONE_PRIORITIZATIONS[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Usaquén',
     cityId: SAMPLE_CITIES[0].id,
     typeId: SAMPLE_ZONE_TYPES[0].id,
-    priorizationId: SAMPLE_ZONE_PRIORIZATIONS[1].id,
+    prioritizationId: SAMPLE_ZONE_PRIORITIZATIONS[1].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Roma Norte',
     cityId: SAMPLE_CITIES[1].id,
     typeId: SAMPLE_ZONE_TYPES[0].id,
-    priorizationId: SAMPLE_ZONE_PRIORIZATIONS[0].id,
+    prioritizationId: SAMPLE_ZONE_PRIORITIZATIONS[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Polanco',
     cityId: SAMPLE_CITIES[1].id,
     typeId: SAMPLE_ZONE_TYPES[0].id,
-    priorizationId: SAMPLE_ZONE_PRIORIZATIONS[1].id,
+    prioritizationId: SAMPLE_ZONE_PRIORITIZATIONS[1].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Pinheiros',
     cityId: SAMPLE_CITIES[2].id,
     typeId: SAMPLE_ZONE_TYPES[0].id,
-    priorizationId: SAMPLE_ZONE_PRIORIZATIONS[0].id,
+    prioritizationId: SAMPLE_ZONE_PRIORITIZATIONS[0].id,
   },
   {
     id: crypto.randomUUID(),
     name: 'Vila Mariana',
     cityId: SAMPLE_CITIES[2].id,
     typeId: SAMPLE_ZONE_TYPES[1].id,
-    priorizationId: SAMPLE_ZONE_PRIORIZATIONS[2].id,
+    prioritizationId: SAMPLE_ZONE_PRIORITIZATIONS[2].id,
   },
 ]
 
@@ -185,23 +185,24 @@ export class SamplesSeeder {
       rows: SAMPLE_ZONE_TYPES.map((zoneType) => [zoneType.id, zoneType.code]),
     },
     {
-      name: 'zone_priorization',
-      insertStatement: 'INSERT INTO zone_priorization (id, code) VALUES (?, ?)',
-      rows: SAMPLE_ZONE_PRIORIZATIONS.map((zonePriorization) => [
-        zonePriorization.id,
-        zonePriorization.code,
+      name: 'zone_prioritization',
+      insertStatement:
+        'INSERT INTO zone_prioritization (id, code) VALUES (?, ?)',
+      rows: SAMPLE_ZONE_PRIORITIZATIONS.map((zonePrioritization) => [
+        zonePrioritization.id,
+        zonePrioritization.code,
       ]),
     },
     {
       name: 'zone',
       insertStatement:
-        'INSERT INTO zone (id, name, city_id, type_id, priorization_id) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO zone (id, name, city_id, type_id, prioritization_id) VALUES (?, ?, ?, ?, ?)',
       rows: SAMPLE_ZONES.map((zone) => [
         zone.id,
         zone.name,
         zone.cityId,
         zone.typeId,
-        zone.priorizationId,
+        zone.prioritizationId,
       ]),
     },
     {

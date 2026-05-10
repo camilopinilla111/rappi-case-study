@@ -6,7 +6,7 @@ const countryCodes = ['ec', 'pe', 'cl', 'uy', 'cr', 'co', 'ar', 'mx', 'br'] as c
 
 export type CountryCode = (typeof countryCodes)[number]
 export type ZoneType = 'wealthy' | 'mixed' | 'non_wealthy'
-export type ZonePriorization =
+export type ZonePrioritization =
   | 'prioritized'
   | 'not_prioritized'
   | 'high_priority'
@@ -17,7 +17,7 @@ export type StandardInputRow = {
   city: string
   zone: string
   zoneType: ZoneType
-  zonePriorization: ZonePriorization
+  zonePrioritization: ZonePrioritization
   metric: string
   weeksAgoMeasurements: Record<number, number>
 }
@@ -55,11 +55,11 @@ const zoneTypeByTsvValue = {
   'Non-Wealthy': 'non_wealthy',
 } satisfies Record<string, ZoneType>
 
-const zonePriorizationByTsvValue = {
+const zonePrioritizationByTsvValue = {
   Prioritized: 'prioritized',
   'Not Prioritized': 'not_prioritized',
   'High Priority': 'high_priority',
-} satisfies Record<string, ZonePriorization>
+} satisfies Record<string, ZonePrioritization>
 
 export class TsvParserStandardInputRowsProvider
   implements StandardInputRowsProvider
@@ -87,9 +87,9 @@ export class TsvParserStandardInputRowsProvider
         'zone_type',
         rowNumber,
       ),
-      zonePriorization: this.mapEnumValue(
+      zonePrioritization: this.mapEnumValue(
         row.zone_prioritization,
-        zonePriorizationByTsvValue,
+        zonePrioritizationByTsvValue,
         'zone_prioritization',
         rowNumber,
       ),

@@ -27,7 +27,7 @@ export class Schema {
       );
     `,
     `
-      CREATE TABLE IF NOT EXISTS zone_priorization (
+      CREATE TABLE IF NOT EXISTS zone_prioritization (
         id TEXT PRIMARY KEY,
         code TEXT NOT NULL UNIQUE CHECK (
           code IN ('high_priority', 'prioritized', 'not_prioritized')
@@ -40,10 +40,10 @@ export class Schema {
         name TEXT NOT NULL,
         city_id TEXT NOT NULL,
         type_id TEXT NOT NULL,
-        priorization_id TEXT NOT NULL,
+        prioritization_id TEXT NOT NULL,
         FOREIGN KEY (city_id) REFERENCES city(id),
         FOREIGN KEY (type_id) REFERENCES zone_type(id),
-        FOREIGN KEY (priorization_id) REFERENCES zone_priorization(id)
+        FOREIGN KEY (prioritization_id) REFERENCES zone_prioritization(id)
       );
     `,
     `
