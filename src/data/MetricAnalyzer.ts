@@ -43,6 +43,8 @@ type ComparableZone = {
   rawDifference: number
 }
 
+const MINIMUM_DIFFERENCE_MAGNITUDE = 0.005
+
 export class MetricAnalyzer {
   constructor(
     private readonly metricsProvider: MetricsProvider,
@@ -119,6 +121,10 @@ export class MetricAnalyzer {
     zone: ComparableZone,
     metricType: MetricType,
   ): boolean {
+    if (Math.abs(zone.rawDifference) < MINIMUM_DIFFERENCE_MAGNITUDE) {
+      return false
+    }
+
     if (metricType === 'higher_is_better') {
       return zone.rawDifference > 0
     } else {
