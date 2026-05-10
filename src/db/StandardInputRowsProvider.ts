@@ -19,15 +19,7 @@ export type StandardInputRow = {
   zoneType: ZoneType
   zonePriorization: ZonePriorization
   metric: string
-  weeksAgo0Measurement: number | null
-  weeksAgo1Measurement: number | null
-  weeksAgo2Measurement: number | null
-  weeksAgo3Measurement: number | null
-  weeksAgo4Measurement: number | null
-  weeksAgo5Measurement: number | null
-  weeksAgo6Measurement: number | null
-  weeksAgo7Measurement: number | null
-  weeksAgo8Measurement: number | null
+  weeksAgoMeasurements: Record<number, number>
 }
 
 export interface StandardInputRowsProvider {
@@ -102,52 +94,40 @@ export class TsvParserStandardInputRowsProvider
         rowNumber,
       ),
       metric: this.getRequiredString(row.metric, 'metric', rowNumber),
-      weeksAgo0Measurement: this.mapMeasurement(
-        row.l0w_roll,
-        'l0w_roll',
-        rowNumber,
-      ),
-      weeksAgo1Measurement: this.mapMeasurement(
-        row.l1w_roll,
-        'l1w_roll',
-        rowNumber,
-      ),
-      weeksAgo2Measurement: this.mapMeasurement(
-        row.l2w_roll,
-        'l2w_roll',
-        rowNumber,
-      ),
-      weeksAgo3Measurement: this.mapMeasurement(
-        row.l3w_roll,
-        'l3w_roll',
-        rowNumber,
-      ),
-      weeksAgo4Measurement: this.mapMeasurement(
-        row.l4w_roll,
-        'l4w_roll',
-        rowNumber,
-      ),
-      weeksAgo5Measurement: this.mapMeasurement(
-        row.l5w_roll,
-        'l5w_roll',
-        rowNumber,
-      ),
-      weeksAgo6Measurement: this.mapMeasurement(
-        row.l6w_roll,
-        'l6w_roll',
-        rowNumber,
-      ),
-      weeksAgo7Measurement: this.mapMeasurement(
-        row.l7w_roll,
-        'l7w_roll',
-        rowNumber,
-      ),
-      weeksAgo8Measurement: this.mapMeasurement(
-        row.l8w_roll,
-        'l8w_roll',
-        rowNumber,
-      ),
+      weeksAgoMeasurements: this.mapMeasurements(row, rowNumber),
     }
+  }
+
+  private mapMeasurements(
+    row: TsvRow,
+    rowNumber: number,
+  ): Record<number, number> {
+    const measurements: Record<number, number> = {}
+    const measurementRows = [
+      { weeksAgo: 0, value: row.l0w_roll, fieldName: 'l0w_roll' },
+      { weeksAgo: 1, value: row.l1w_roll, fieldName: 'l1w_roll' },
+      { weeksAgo: 2, value: row.l2w_roll, fieldName: 'l2w_roll' },
+      { weeksAgo: 3, value: row.l3w_roll, fieldName: 'l3w_roll' },
+      { weeksAgo: 4, value: row.l4w_roll, fieldName: 'l4w_roll' },
+      { weeksAgo: 5, value: row.l5w_roll, fieldName: 'l5w_roll' },
+      { weeksAgo: 6, value: row.l6w_roll, fieldName: 'l6w_roll' },
+      { weeksAgo: 7, value: row.l7w_roll, fieldName: 'l7w_roll' },
+      { weeksAgo: 8, value: row.l8w_roll, fieldName: 'l8w_roll' },
+    ]
+
+    for (const measurementRow of measurementRows) {
+      const measurement = this.mapMeasurement(
+        measurementRow.value,
+        measurementRow.fieldName,
+        rowNumber,
+      )
+
+      if (measurement !== null) {
+        measurements[measurementRow.weeksAgo] = measurement
+      }
+    }
+
+    return measurements
   }
 
   private getRequiredString(

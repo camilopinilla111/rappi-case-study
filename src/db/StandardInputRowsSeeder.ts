@@ -6,18 +6,6 @@ import type {
   StandardInputRowsProvider,
 } from './StandardInputRowsProvider'
 
-const measurementColumns = [
-  { weeksAgo: 0, key: 'weeksAgo0Measurement' },
-  { weeksAgo: 1, key: 'weeksAgo1Measurement' },
-  { weeksAgo: 2, key: 'weeksAgo2Measurement' },
-  { weeksAgo: 3, key: 'weeksAgo3Measurement' },
-  { weeksAgo: 4, key: 'weeksAgo4Measurement' },
-  { weeksAgo: 5, key: 'weeksAgo5Measurement' },
-  { weeksAgo: 6, key: 'weeksAgo6Measurement' },
-  { weeksAgo: 7, key: 'weeksAgo7Measurement' },
-  { weeksAgo: 8, key: 'weeksAgo8Measurement' },
-] as const
-
 export class StandardInputRowsSeeder {
   private readonly metricTypeResolver = new MetricTypeResolver()
 
@@ -238,10 +226,10 @@ export class StandardInputRowsSeeder {
       zoneId: string
     },
   ) {
-    for (const column of measurementColumns) {
-      const value = row[column.key]
+    for (let weeksAgo = 0; weeksAgo <= 8; weeksAgo += 1) {
+      const value = row.weeksAgoMeasurements[weeksAgo]
 
-      if (value === null) {
+      if (value === undefined) {
         continue
       }
 
@@ -250,7 +238,7 @@ export class StandardInputRowsSeeder {
         [
           crypto.randomUUID(),
           value,
-          column.weeksAgo,
+          weeksAgo,
           ids.zoneId,
           ids.metricId,
           ids.companyId,
