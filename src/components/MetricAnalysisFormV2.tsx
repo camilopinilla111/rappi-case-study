@@ -27,6 +27,19 @@ type InlineSelectProps = {
   onChange: (value: string) => void
 }
 
+const metricDisplayNames: Record<string, string> = {
+  'Avg Delivery Time (mins)': 'tiempo de entrega',
+  'Customer Satisfaction Score': 'satisfacción del cliente',
+  'Delivery Fee (MXN)': 'tarifa de envío',
+  'Restaurants SST > SS CVR': 'conversión en restaurantes',
+  'Retail SST > SS CVR': 'conversión en retail',
+  'Service Fee (%)': 'tarifa de servicio',
+}
+
+function getMetricDisplayName(metric: Metric): string {
+  return metricDisplayNames[metric.name] ?? metric.name
+}
+
 function InlineSelect({
   id,
   ariaLabel,
@@ -112,7 +125,7 @@ export function MetricAnalysisFormV2({
           >
             {metrics.map((metric) => (
               <option key={metric.id} value={metric.id}>
-                {metric.name}
+                {getMetricDisplayName(metric)}
               </option>
             ))}
           </InlineSelect>
