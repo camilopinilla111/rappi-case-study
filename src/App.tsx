@@ -1,5 +1,7 @@
+import { AnalyticsScreen } from './screens/AnalyticsScreen'
+
 function App() {
-  return null
+  return <AnalyticsScreen />
 }
 
 export default App
