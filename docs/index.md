@@ -12,7 +12,7 @@ La estrategia de **meal prep en Turbo** debe tratarse como una nueva categoría 
 
 La propuesta base debe mantenerse, pero con una precisión importante: **“eat now” y “eat later” no deben operar igual en todas las zonas**. En zonas densas y céntricas puede prometerse velocidad tipo Turbo; en zonas periféricas o de baja densidad, la promesa debe moverse hacia ventanas, pedidos programados, packs o cobertura más selectiva.
 
-Esto es consistente con los tres reportes de investigación adjuntos:
+La lógica estratégica se sostiene sobre tres premisas operativas:
 
 - La reducción de tiempo depende de preparación, asignación, densidad, ETA confiable y control de cobertura.
 - El precio total mejora más con envío, fee, bundles, umbrales y promociones segmentadas.
@@ -260,29 +260,6 @@ Este debe ser una segunda fase, no el punto de partida.
 4. Se controla merma, vencimiento y temperatura.
 
 Este modelo solo debe activarse si hay suficiente rotación por SKU. Si se implementa demasiado pronto, puede aumentar merma y complejidad.
-
-### 5.3 Flujo operativo recomendado
-
-```mermaid
-flowchart TD
-    A[Forecast por zona y franja] --> B[Selección de SKUs y lotes]
-    B --> C[Preparación previa por aliado]
-    C --> D{Tipo de producto}
-    D -->|Eat now| E[Finishing mínimo]
-    D -->|Eat later| F[Refrigeración, sellado y etiquetado]
-    E --> G[Control térmico y empaque]
-    F --> G
-    G --> H[Visibilidad en submenú Turbo Meal Prep]
-    H --> I{Stock, backlog y courier suficientes}
-    I -->|Sí| J[Orden habilitada]
-    I -->|No| K[Ocultar SKU, ampliar ETA o programar]
-    J --> L[Pickup priorizado]
-    L --> M[Entrega]
-    M --> N[CSAT, recompra, reclamos y margen]
-    N --> A
-```
-
----
 
 ## 6. Estrategia para reducir tiempo de entrega
 
