@@ -14,6 +14,8 @@ const differenceFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
 
+const MAX_VISIBLE_ZONES = 10
+
 export function ZoneDifferenceList({
   zones,
   referenceCompanyName,
@@ -30,6 +32,8 @@ export function ZoneDifferenceList({
       onZoneSelect(zoneId)
     }
   }
+
+  const visibleZones = zones.slice(0, MAX_VISIBLE_ZONES)
 
   return (
     <div className="overflow-x-auto lg:h-full">
@@ -51,7 +55,7 @@ export function ZoneDifferenceList({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200">
-          {zones.map((zone) => {
+          {visibleZones.map((zone) => {
             const differencePrefix =
               zone.comparisonData.value >= zone.referenceData.value ? '+' : '-'
             const isSelected = zone.id === selectedZoneId
