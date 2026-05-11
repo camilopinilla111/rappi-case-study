@@ -5,6 +5,7 @@ import type {
   AdvantagesInputRow,
   AdvantagesInputRowsProvider,
 } from './AdvantagesInputRowsProvider'
+import type { AverageTargetValuesGenerator } from './AverageTargetValuesGenerator'
 
 type MetricReference = {
   id: string
@@ -12,7 +13,14 @@ type MetricReference = {
 }
 
 export class AdvantagesInputRowsSeeder {
-  constructor(private readonly providers: AdvantagesInputRowsProvider[]) {}
+  private readonly generatedAverageEpsilon = 0.0001
+
+  private readonly targetMeasurementsCount = 9
+
+  constructor(
+    private readonly providers: AdvantagesInputRowsProvider[],
+    private readonly averageTargetValuesGenerator: AverageTargetValuesGenerator,
+  ) {}
 
   seed(database: Database) {
     const rows = this.providers.flatMap((provider) => provider.getRows())
@@ -41,11 +49,12 @@ export class AdvantagesInputRowsSeeder {
       metricId: metric.id,
       zoneId,
     })
-    const rappiValue = this.computeRappiValue(
+    const rappiAverage = this.computeRappiValue(
       competitorAverage,
       row.advantage,
       metric.type,
     )
+    const rappiValues = this.getRappiTargetValues(rappiAverage)
 
     this.ensureRappiMeasurementDoesNotExist(database, {
       companyId: rappiId,
@@ -53,10 +62,12 @@ export class AdvantagesInputRowsSeeder {
       zoneId,
     })
 
-    database.run(
-      'INSERT INTO metric_measurement (id, value, weeks_ago, zone_id, metric_id, company_id) VALUES (?, ?, ?, ?, ?, ?)',
-      [crypto.randomUUID(), rappiValue, 0, zoneId, metric.id, rappiId],
-    )
+    for (const [weeksAgo, rappiValue] of rappiValues.entries()) {
+      database.run(
+        'INSERT INTO metric_measurement (id, value, weeks_ago, zone_id, metric_id, company_id) VALUES (?, ?, ?, ?, ?, ?)',
+        [crypto.randomUUID(), rappiValue, weeksAgo, zoneId, metric.id, rappiId],
+      )
+    }
   }
 
   private getRequiredCompanyId(database: Database, name: string): string {
@@ -167,6 +178,36 @@ export class AdvantagesInputRowsSeeder {
     return rappiValue
   }
 
+  private getRappiTargetValues(rappiAverage: number): number[] {
+    const targetValues = this.averageTargetValuesGenerator.generate(
+      rappiAverage,
+      this.targetMeasurementsCount,
+    )
+
+    if (targetValues.length !== this.targetMeasurementsCount) {
+      throw new Error('Generated Rappi measurements count is invalid.')
+    }
+
+    for (const targetValue of targetValues) {
+      if (!Number.isFinite(targetValue)) {
+        throw new Error('Generated Rappi measurement must be finite.')
+      }
+    }
+
+    const generatedAverage =
+      targetValues.reduce((sum, targetValue) => sum + targetValue, 0) /
+      targetValues.length
+
+    if (
+      Math.abs(generatedAverage - rappiAverage) >
+      this.generatedAverageEpsilon
+    ) {
+      throw new Error('Generated Rappi measurements average is invalid.')
+    }
+
+    return targetValues
+  }
+
   private ensureRappiMeasurementDoesNotExist(
     database: Database,
     ids: {
@@ -183,10 +224,16 @@ export class AdvantagesInputRowsSeeder {
         WHERE company_id = ?
           AND metric_id = ?
           AND zone_id = ?
-          AND weeks_ago = 0
+          AND weeks_ago >= 0
+          AND weeks_ago < ?
         LIMIT 1
       `,
-      [ids.companyId, ids.metricId, ids.zoneId],
+      [
+        ids.companyId,
+        ids.metricId,
+        ids.zoneId,
+        this.targetMeasurementsCount,
+      ],
     )
 
     if (existingId !== null) {
