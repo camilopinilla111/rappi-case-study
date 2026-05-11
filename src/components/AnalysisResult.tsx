@@ -1,5 +1,8 @@
+import { useEffect, useMemo, useState } from 'react'
+
 import type { Response as MetricAnalysisResponse } from '../data/MetricAnalyzer'
 import { ZoneDifferenceList } from './ZoneDifferenceList'
+import { ZoneTrendChart } from './ZoneTrendChart'
 
 type AnalysisResultProps = {
   result: MetricAnalysisResponse | null
@@ -14,6 +17,24 @@ export function AnalysisResult({
   referenceCompanyName,
   comparisonCompanyName,
 }: AnalysisResultProps) {
+  const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setSelectedZoneId(result?.zones[0]?.id ?? null)
+  }, [result])
+
+  const selectedZone = useMemo(() => {
+    if (!result || !selectedZoneId) {
+      return null
+    }
+
+    return (
+      result.zones.find((zone) => zone.id === selectedZoneId) ??
+      result.zones[0] ??
+      null
+    )
+  }, [result, selectedZoneId])
+
   if (error) {
     return (
       <section className="rounded-lg border border-red-200 bg-red-50 p-5 text-sm text-red-800">
@@ -38,12 +59,21 @@ export function AnalysisResult({
 
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div>
+      <div className="grid grid-cols-1 divide-y divide-slate-200 lg:grid-cols-2 lg:divide-x lg:divide-y-0">
         <ZoneDifferenceList
           zones={result.zones}
           referenceCompanyName={referenceCompanyName}
           comparisonCompanyName={comparisonCompanyName}
+          selectedZoneId={selectedZone?.id ?? null}
+          onZoneSelect={setSelectedZoneId}
         />
+        {selectedZone ? (
+          <ZoneTrendChart
+            zone={selectedZone}
+            referenceCompanyName={referenceCompanyName}
+            comparisonCompanyName={comparisonCompanyName}
+          />
+        ) : null}
       </div>
     </section>
   )

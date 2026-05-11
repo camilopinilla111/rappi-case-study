@@ -4,19 +4,27 @@ type ZoneDifferenceListProps = {
   zones: Zone[]
   referenceCompanyName: string
   comparisonCompanyName: string
+  selectedZoneId: string | null
+  onZoneSelect: (zoneId: string) => void
 }
 
 const differenceFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
 
+const MAX_VISIBLE_ZONES = 10
+
 export function ZoneDifferenceList({
   zones,
   referenceCompanyName,
   comparisonCompanyName,
+  selectedZoneId,
+  onZoneSelect,
 }: ZoneDifferenceListProps) {
+  const visibleZones = zones.slice(0, MAX_VISIBLE_ZONES)
+
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto lg:h-full">
       <table className="min-w-full text-left text-sm">
         <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
           <tr>
@@ -35,12 +43,19 @@ export function ZoneDifferenceList({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200">
-          {zones.map((zone) => {
+          {visibleZones.map((zone) => {
             const differencePrefix =
               zone.comparisonData.value >= zone.referenceData.value ? '+' : '-'
+            const isSelected = zone.id === selectedZoneId
 
             return (
-              <tr key={zone.id}>
+              <tr
+                key={zone.id}
+                onMouseEnter={() => onZoneSelect(zone.id)}
+                className={`transition hover:bg-orange-50 ${
+                  isSelected ? 'bg-orange-50' : 'bg-white'
+                }`}
+              >
                 <td className="py-2.5 pl-4 pr-3 font-medium text-slate-800">
                   {zone.name}
                 </td>
