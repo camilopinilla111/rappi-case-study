@@ -1,5 +1,3 @@
-import type { KeyboardEvent } from 'react'
-
 import type { Zone } from '../data/MetricAnalyzer'
 
 type ZoneDifferenceListProps = {
@@ -23,16 +21,6 @@ export function ZoneDifferenceList({
   selectedZoneId,
   onZoneSelect,
 }: ZoneDifferenceListProps) {
-  const handleRowKeyDown = (
-    event: KeyboardEvent<HTMLTableRowElement>,
-    zoneId: string,
-  ) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
-      onZoneSelect(zoneId)
-    }
-  }
-
   const visibleZones = zones.slice(0, MAX_VISIBLE_ZONES)
 
   return (
@@ -63,12 +51,8 @@ export function ZoneDifferenceList({
             return (
               <tr
                 key={zone.id}
-                role="button"
-                tabIndex={0}
-                aria-pressed={isSelected}
-                onClick={() => onZoneSelect(zone.id)}
-                onKeyDown={(event) => handleRowKeyDown(event, zone.id)}
-                className={`cursor-pointer outline-none transition hover:bg-orange-50 focus:bg-orange-50 focus:ring-2 focus:ring-inset focus:ring-[#ff441f]/30 ${
+                onMouseEnter={() => onZoneSelect(zone.id)}
+                className={`transition hover:bg-orange-50 ${
                   isSelected ? 'bg-orange-50' : 'bg-white'
                 }`}
               >
