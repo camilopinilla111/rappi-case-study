@@ -1,3 +1,36 @@
+# Hallazgos en los datos
+
+Solo se muestran las zonas priorizadas dentro de cada grupo de ventaja competitiva.
+
+## Uber Eats tiene menor tiempo de entrega
+
+| Zona | Diferencia | Uber Eats (min) | Rappi (min) |
+|---|---:|---:|---:|
+| Del Valle | -9.46 | 32.86 | 42.32 |
+| Lomas de Chapultepec | -5.25 | 27.73 | 32.97 |
+| Santa Fe | -5.22 | 30.22 | 35.44 |
+
+## DiDi Food tiene menor tarifa de envío
+
+| Zona | Diferencia | DiDi Food (MXN) | Rappi (MXN) |
+|---|---:|---:|---:|
+| Condesa | -3.11 | 8.91 | 12.01 |
+| Del Valle | -2.9 | 8.36 | 11.26 |
+| Polanco | -2.89 | 15.42 | 18.31 |
+| Roma Norte | -2.72 | 11.85 | 14.57 |
+
+## DiDi Food tiene mayor satisfacción del cliente
+
+| Zona | Diferencia | DiDi Food (puntuación) | Rappi (puntuación) |
+|---|---:|---:|---:|
+| Del Valle | +1.2 | 4.54 | 3.35 |
+| Condesa | +1.09 | 4.3 | 3.21 |
+| Lomas de Chapultepec | +1.05 | 4.4 | 3.35 |
+| Polanco | +0.97 | 4.25 | 3.29 |
+| Santa Fe | +0.94 | 4.4 | 3.46 |
+
+---
+
 # Estrategia de Meal Prep en Turbo
 
 **Objetivo:** lanzar y escalar una propuesta de meal prep en Turbo que reduzca el tiempo de entrega, reduzca el precio total pagado por el cliente y aumente la satisfacción del cliente.
