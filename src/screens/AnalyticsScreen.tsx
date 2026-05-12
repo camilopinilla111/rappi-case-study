@@ -7,6 +7,11 @@ import type { Response as MetricAnalysisResponse } from '../data/MetricAnalyzer'
 import type { Metric } from '../data/MetricRepo'
 import { AnalysisResult } from '../components/AnalysisResult'
 import { MetricAnalysisFormV2 } from '../components/MetricAnalysisFormV2'
+import {
+  getMetricDisplayNameByName,
+  getMetricUnitLabelByName,
+  isSatisfactionMetric,
+} from '../utils/MetricDisplayName'
 
 type AnalyticsScreenProps = {
   dataService?: DataService
@@ -158,6 +163,10 @@ export function AnalyticsScreen({
     companies.find((company) => company.id === referenceCompanyId)?.name ?? ''
   const comparisonCompanyName =
     companies.find((company) => company.id === comparisonCompanyId)?.name ?? ''
+  const metricName = metrics.find((metric) => metric.id === metricId)?.name ?? ''
+  const metricDisplayName = getMetricDisplayNameByName(metricName)
+  const metricUnitLabel = getMetricUnitLabelByName(metricName)
+  const shouldUseSatisfactionScale = isSatisfactionMetric(metricName)
 
   return (
     <main className="min-h-screen bg-slate-50 px-2 py-2 text-slate-950 sm:px-3 sm:py-3">
@@ -194,6 +203,9 @@ export function AnalyticsScreen({
             error={analysisError}
             referenceCompanyName={referenceCompanyName}
             comparisonCompanyName={comparisonCompanyName}
+            metricDisplayName={metricDisplayName}
+            metricUnitLabel={metricUnitLabel}
+            isSatisfactionMetric={shouldUseSatisfactionScale}
           />
         )}
       </div>

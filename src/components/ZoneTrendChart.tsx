@@ -17,6 +17,7 @@ type ZoneTrendChartProps = {
   zone: Zone
   referenceCompanyName: string
   comparisonCompanyName: string
+  isSatisfactionMetric: boolean
 }
 
 type ChartPoint = {
@@ -31,6 +32,18 @@ const weeksAgoLabels = [8, 7, 6, 5, 4, 3, 2, 1, 0]
 const valueFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
+
+function formatWeeksAgoLabel(weeksAgo: number): string {
+  if (weeksAgo === 0) {
+    return 'Last week'
+  }
+
+  if (weeksAgo === 1) {
+    return '1 week ago'
+  }
+
+  return `${weeksAgo} weeks ago`
+}
 
 function getMeasurementValueByWeek(
   measurements: Measurement[],
@@ -53,7 +66,7 @@ function mapChartData(zone: Zone): ChartPoint[] {
 
   return weeksAgoLabels.map((weeksAgo) => ({
     weeksAgo,
-    label: `${weeksAgo} weeks ago`,
+    label: formatWeeksAgoLabel(weeksAgo),
     referenceValue: referenceMeasurements.get(weeksAgo) ?? null,
     comparisonValue: comparisonMeasurements.get(weeksAgo) ?? null,
   }))
@@ -63,6 +76,7 @@ export function ZoneTrendChart({
   zone,
   referenceCompanyName,
   comparisonCompanyName,
+  isSatisfactionMetric,
 }: ZoneTrendChartProps) {
   const chartData = mapChartData(zone)
   const referenceCompanyAccentColor =
@@ -72,7 +86,7 @@ export function ZoneTrendChart({
   )
 
   return (
-    <section className="flex h-full min-h-[26rem] flex-col gap-4 p-4">
+    <section className="flex h-full min-h-[26rem] flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="min-w-0">
         <h2 className="truncate text-base font-semibold text-slate-950">
           {zone.name}
@@ -99,6 +113,7 @@ export function ZoneTrendChart({
               height={72}
             />
             <YAxis
+              domain={isSatisfactionMetric ? [0, 5] : undefined}
               tick={{ fill: '#64748b', fontSize: 12 }}
               tickFormatter={(value) => valueFormatter.format(Number(value))}
               tickLine={false}
