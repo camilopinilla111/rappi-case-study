@@ -33,16 +33,18 @@ const valueFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 })
 
-function formatWeeksAgoLabel(weeksAgo: number): string {
+function formatWeeksAgoLabel(label: unknown): string {
+  const weeksAgo = Number(label)
+
+  if (!Number.isFinite(weeksAgo)) {
+    return String(label)
+  }
+
   if (weeksAgo === 0) {
-    return 'This week'
+    return 'Esta semana'
   }
 
-  if (weeksAgo === 1) {
-    return '1 week ago'
-  }
-
-  return `${weeksAgo} weeks ago`
+  return `Hace ${weeksAgo} semana${weeksAgo === 1 ? '' : 's'}`
 }
 
 function getMeasurementValueByWeek(
@@ -66,7 +68,7 @@ function mapChartData(zone: Zone): ChartPoint[] {
 
   return weeksAgoLabels.map((weeksAgo) => ({
     weeksAgo,
-    label: formatWeeksAgoLabel(weeksAgo),
+    label: String(weeksAgo),
     referenceValue: referenceMeasurements.get(weeksAgo) ?? null,
     comparisonValue: comparisonMeasurements.get(weeksAgo) ?? null,
   }))
@@ -98,22 +100,22 @@ export function ZoneTrendChart({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 8, right: 48, bottom: 56, left: 8 }}
+            margin={{ top: 8, right: 48, bottom: 16, left: 8 }}
           >
             <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" />
             <XAxis
               dataKey="label"
               interval={0}
               minTickGap={0}
-              angle={-35}
-              textAnchor="end"
+              textAnchor="middle"
               tick={{ fill: '#64748b', fontSize: 12 }}
               tickLine={false}
               padding={{ left: 28, right: 48 }}
-              height={72}
+              height={32}
             />
             <YAxis
               domain={isSatisfactionMetric ? [0, 5] : undefined}
+              ticks={isSatisfactionMetric ? [0, 1, 2, 3, 4, 5] : undefined}
               tick={{ fill: '#64748b', fontSize: 12 }}
               tickFormatter={(value) => valueFormatter.format(Number(value))}
               tickLine={false}
@@ -121,6 +123,7 @@ export function ZoneTrendChart({
             />
             <Tooltip
               formatter={(value) => valueFormatter.format(Number(value))}
+              labelFormatter={formatWeeksAgoLabel}
               labelStyle={{ color: '#0f172a' }}
             />
             <Legend wrapperStyle={{ fontSize: 12, fontWeight: 700 }} />
