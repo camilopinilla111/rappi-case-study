@@ -91,29 +91,41 @@ export function ZoneDifferenceList({
           </thead>
           <tbody
             onMouseLeave={handleRowsLeave}
-            className="divide-y divide-slate-200"
+            className="divide-y-0"
           >
-            {visibleZones.map((zone) => {
+            {visibleZones.map((zone, index) => {
               const differencePrefix =
                 zone.comparisonData.value >= zone.referenceData.value
                   ? '+'
                   : '-'
               const isSelected = zone.id === selectedZoneId
+              const isPreviousZoneLocked =
+                visibleZones[index - 1]?.id === selectedZoneId &&
+                isSelectionLocked
               const shouldShowSelectionBackground =
-                isSelected && (isSelectionLocked || isCursorOverRows)
+                isSelected && !isSelectionLocked && isCursorOverRows
+              const shouldShowLockedBorder = isSelected && isSelectionLocked
+              const shouldShowRegularBorder =
+                index > 0 && !shouldShowLockedBorder && !isPreviousZoneLocked
               const rowBackgroundClass =
-                shouldShowSelectionBackground && isSelectionLocked
-                  ? 'bg-slate-200 hover:bg-slate-200'
+                shouldShowLockedBorder
+                  ? 'bg-white hover:bg-white'
                   : shouldShowSelectionBackground
-                    ? 'bg-slate-50 hover:bg-slate-100'
-                    : 'bg-white hover:bg-slate-50'
+                  ? 'bg-slate-50 hover:bg-slate-100'
+                  : 'bg-white hover:bg-slate-50'
+              const rowBorderClass = shouldShowLockedBorder
+                ? 'rounded-md outline outline-2 -outline-offset-2 outline-slate-500'
+                : 'outline outline-0 outline-transparent'
+              const regularBorderClass = shouldShowRegularBorder
+                ? 'border-t border-slate-200'
+                : 'border-t border-transparent'
 
               return (
                 <tr
                   key={zone.id}
                   onMouseEnter={() => handleZoneHover(zone.id)}
                   onClick={() => handleZoneClick(zone.id)}
-                  className={`cursor-pointer transition ${rowBackgroundClass}`}
+                  className={`cursor-pointer transition ${rowBackgroundClass} ${rowBorderClass} ${regularBorderClass}`}
                 >
                   <td
                     className={`py-2.5 pl-4 pr-3 ${
